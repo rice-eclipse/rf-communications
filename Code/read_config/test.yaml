@@ -5,17 +5,17 @@ bits_per_transmit: 528
 packets_per_transmit: 1
 transmit_per_second: 5
 data_sizes: 
-        acceleration1: 4
-        acceleration2: 4
-        acceleration3: 4
-        gyro1: 4
-        gyro2: 4
-        gyro3: 4
-        magnetic1: 4
-        magnetic2: 4
-        magnetic3: 4
-        altitude: 4
-        gps_location1: 4
-        gps_location1: 4
-        temperature: 4
+    acceleration1: 4
+    acceleration2: 4
+    acceleration3: 4
+    gyro1: 4
+    gyro2: 4
+    gyro3: 4
+    magnetic1: 4
+    magnetic2: 4
+    magnetic3: 4
+    altitude: 4
+    gps_location1: 4
+    gps_location1: 4
+    temperature: 4
 callsign_byte: 6
