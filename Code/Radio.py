@@ -27,11 +27,6 @@ class Radio:
 
         # Create an instance of RFM9x
 
-        # signal bandwith
-        # spreading factor
-        # txpowers
-        # record rssi and snr
-
         self.rfm9x = adafruit_rfm9x.RFM9x(self.spi, self.cs, self.reset, self.RADIO_FREQ_MHZ)
         # Optional parameter baudrate
         # Default baud rate is 10MHz but that may be too fast
@@ -72,7 +67,7 @@ class Radio:
 
     def send_flight_data(self, acceleration, gyro, magnetic, altitude, gps, temperature):
         """
-        Wrapper for send() function, designed to ensure that data is sent in the correct order.
+        Helper for send() function, designed to ensure that flight data is sent in the correct order.
 
         Parameters:
             acceleration: 3-tuple of floats
@@ -92,7 +87,25 @@ class Radio:
                 flat_data.extend(item)
             else:
                 flat_data.append(item)
-        return self.send(flat_data)
+        self.send(flat_data)
+
+    def send_testing_data(self, bandwidth, spreading, txpower):
+        """
+        Helper for send() function, designed to ensure that testingdata is sent in the correct order.
+
+        Parameters:
+            bandwidth: bandwidth
+            spreading: spreading
+            txpower: txpower
+
+        Returns:
+            None
+        """
+        self.rfm9x.signal_bandwidth = bandwidth
+        self.rfm9x.spreading_factor = spreading
+        self.rfm9x.tx_power = txpower
+        self.send((bandwidth, spreading, txpower))
+
 
     def receive(self, packet):
         """
@@ -149,11 +162,14 @@ class Radio:
 
     def reformat_as_flight_data(self, received_data):
         """
-        Takes a dictionary from the receive() function and re-organizes it into flight variables
-        This could be static I guess but it's nice to bundle it with Radio I think
+        Takes a dictionary from receive() function and re-organizes it into flight variables
+        This could be static I guess, but it's nice to bundle it with Radio I think
 
         Parameters:
-            received_data: a dictionary with keys data and rssi
+            received_data: a dictionary with keys:
+                data: a tuple of floats that was received
+                rssi: rssi (in dB)
+                snr: snr
 
         Returns:
             Dictionary with keys:
@@ -165,12 +181,42 @@ class Radio:
                 temperature: float
         """
         data = received_data["data"]
-        reorganized_data = {"acceleration": (data[0], data[1], data[2]),
-                            "gyro": (data[3], data[4], data[5]),
-                            "magnetic": (data[6], data[7], data[8]),
-                            "altitude": data[9],
-                            "gps": (data[10], data[11]),
-                            "temperature": data[12],
-                            "rssi": received_data["rssi"],
-                            "snr": received_data["snr"]}
+        reorganized_data = {
+            "acceleration": (data[0], data[1], data[2]),
+            "gyro": (data[3], data[4], data[5]),
+            "magnetic": (data[6], data[7], data[8]),
+            "altitude": data[9],
+            "gps": (data[10], data[11]),
+            "temperature": data[12],
+            "rssi": received_data["rssi"],
+            "snr": received_data["snr"]}
+        return reorganized_data
+
+    def reformat_as_testing_data(self, received_data):
+        """
+        Takes a dictionary generated from a radio packet using receive() and reformats it for testing
+
+        Parameters:
+            received_data: a dictionary with keys:
+                data: a tuple of floats that was received
+                rssi: rssi (in dB)
+                snr: snr
+
+        Returns:
+            Dictionary with keys:
+                bandwidth
+                spreading
+                txpower
+                rssi
+                snr
+        """
+
+        data = received_data["data"]
+        reorganized_data = {
+            "bandwidth": data[0],
+            "spreading": data[1],
+            "txpower": data[2],
+            "rssi": received_data["rssi"],
+            "snr": received_data["snr"]
+        }
         return reorganized_data
