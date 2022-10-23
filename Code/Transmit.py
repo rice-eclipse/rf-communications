@@ -1,4 +1,4 @@
-# Simple demo of sending and recieving data with the RFM95 LoRa radio.
+# Simple demo of sending and receiving data with the RFM95 LoRa radio.
 # much from https://learn.adafruit.com/adafruit-rfm69hcw-and-rfm96-rfm95-rfm98-lora-packet-padio-breakouts/circuitpython-for-rfm9x-lora
 
 # initialize SPI connection with radio
