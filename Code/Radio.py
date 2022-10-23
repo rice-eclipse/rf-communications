@@ -27,6 +27,11 @@ class Radio:
 
         # Create an instance of RFM9x
 
+        # signal bandwith
+        # spreading factor
+        # txpowers
+        # record rssi and snr
+
         self.rfm9x = adafruit_rfm9x.RFM9x(self.spi, self.cs, self.reset, self.RADIO_FREQ_MHZ)
         # Optional parameter baudrate
         # Default baud rate is 10MHz but that may be too fast
@@ -142,7 +147,7 @@ class Radio:
                 "snr": snr
             }
 
-    def reformat_received_data(self, received_data):
+    def reformat_as_flight_data(self, received_data):
         """
         Takes a dictionary from the receive() function and re-organizes it into flight variables
         This could be static I guess but it's nice to bundle it with Radio I think
@@ -169,18 +174,3 @@ class Radio:
                             "rssi": received_data["rssi"],
                             "snr": received_data["snr"]}
         return reorganized_data
-
-
-# radio = Radio()
-# packet = radio.send_flight_data((1,1,1),(2,2,2),(3,3,3),4,(5,5),6)
-# print(packet)
-# print(len(packet))
-# received_data = radio.receive(packet)
-# reformatted_data = radio.reformat_received_data(received_data)
-# print(reformatted_data)
-#
-# packet2 = radio.send((1, 1, 1, 0, 0, 0, 1, 1, 1))
-# print(packet2)
-# print(len(packet2))
-# received_data2 = radio.receive(packet2)
-# print(received_data2)
