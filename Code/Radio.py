@@ -27,8 +27,8 @@ class Radio:
 
         # Create an instance of RFM9x
 
-        self.rfm9x = adafruit_rfm9x.RFM9x(self.spi, self.cs, self.reset, self.RADIO_FREQ_MHZ)
-        # Optional parameter baudrate
+        self.rfm9x = adafruit_rfm9x.RFM9x(self.spi, self.cs, self.reset, self.RADIO_FREQ_MHZ, baudrate=10000000)
+        # Optional parameter baudrate of connection between rfm9x and SPI (baudrate is equal to bitrate)
         # Default baud rate is 10MHz but that may be too fast
         # If issues arise, decrease to 1MHz
 
@@ -50,6 +50,7 @@ class Radio:
         # https://docs.google.com/spreadsheets/d/1BNU0LOl0tzaBlsRqHiAFNp9Y_h9E01Kwud-uezHMNdA/edit#gid=1938337728
 
         # Every value should be an integer that can be stored in 4 bytes
+        # Remember, packets can't be longer than 252 bytes!
 
         # 6-Byte FCC License Callsign - required for every packet
         callsign = bytes("CLSIGN", 'ASCII')
@@ -58,12 +59,11 @@ class Radio:
         data_bytearray.extend(callsign)
 
         for num in data:
-            #data_bytearray.extend(num.to_bytes(4, 'big'))
+            # data_bytearray.extend(num.to_bytes(4, 'big'))
             data_bytearray.extend(struct.pack('>f', float(num)))
 
         # To send a message, call send()
         self.rfm9x.send(bytes(data_bytearray))
-        # return bytes(data_bytearray)  # for testing
 
     def send_flight_data(self, acceleration, gyro, magnetic, altitude, gps, temperature):
         """
@@ -89,24 +89,6 @@ class Radio:
                 flat_data.append(item)
         self.send(flat_data)
 
-    def send_testing_data(self, bandwidth, spreading, txpower):
-        """
-        Helper for send() function, designed to ensure that testingdata is sent in the correct order.
-
-        Parameters:
-            bandwidth: bandwidth
-            spreading: spreading
-            txpower: txpower
-
-        Returns:
-            None
-        """
-        self.rfm9x.signal_bandwidth = bandwidth
-        self.rfm9x.spreading_factor = spreading
-        self.rfm9x.tx_power = txpower
-        self.send((bandwidth, spreading, txpower))
-
-
     def receive(self):
         """
         Receives data through the RFM9X radio and returns it, along with last received signal strength
@@ -121,7 +103,7 @@ class Radio:
                 snr: signal-to-noise ratio
         """
         packet = self.rfm9x.receive()
-        # Optionally change the receive timeout from its default of 0.5 seconds:
+        # Optionally change the receive timeout (how long until it gives up) from its default of 0.5 seconds:
         # packet = rfm9x.receive(timeout=5.0)
         # If no packet was received during the timeout then None is returned.
         if packet is None:
@@ -135,9 +117,9 @@ class Radio:
             # Assuming the received packet follows our encoding scheme, the first six bytes will be the callsign
             # and the rest of the packet will be integers, each occupying exactly four bytes
             if (len(packet) - 6) % 4 != 0:
+                # Packet isn't formatted like CALLSIGN-4BYTE-4BYTE-4BYTE
                 print("Message is not appropriate length")
-            else:
-                print("Message is appropriate length")
+                return None
 
             encoded_data = packet[6:]
             data = []
@@ -147,11 +129,9 @@ class Radio:
 
             # Also read the RSSI (signal strength) of the last received message, in dB
             rssi = self.rfm9x.last_rssi
-            # rssi = 99
 
             # Also also read the SNR (Signal-to-Noise Ratio) of the last message
             snr = self.rfm9x.last_snr
-            # snr = 0.9
 
             # Return data and other info
             return {
@@ -212,10 +192,17 @@ class Radio:
         """
 
         data = received_data["data"]
+
+        if len(data) != 5:
+            print("Received data isn't the right length")
+            return None
+
         reorganized_data = {
             "bandwidth": data[0],
             "spreading": data[1],
             "txpower": data[2],
+            "packetnum": data[3],
+            "timestamp": data[4],
             "rssi": received_data["rssi"],
             "snr": received_data["snr"]
         }
