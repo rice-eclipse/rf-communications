@@ -23,3 +23,15 @@ for config in test_cases:
 # What to do if packets drop? - Encoding format will detect certain errors automatically (ex. if bytes are chopped)
 
 # Packets sent every 0.1-0.5 seconds
+
+
+# 19 digits
+
+# 1234567890123456789 nanoseconds
+# 1234567890123.456789 milliseconds
+# 1234567890123.000000 milliseconds
+# 1234567890123 milliseconds
+
+# 1234567800000 + 0000000090123
+
+# Blog with nice floating precision chart https://blog.demofox.org/2017/11/21/floating-point-precision/

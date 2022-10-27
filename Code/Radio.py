@@ -186,7 +186,9 @@ class Radio:
             Dictionary with keys:
                 bandwidth
                 spreading
-                txpower
+                tx_power
+                packet_num
+                timestamp
                 rssi
                 snr
         """
@@ -201,7 +203,7 @@ class Radio:
             "bandwidth": data[0],
             "spreading": data[1],
             "txpower": data[2],
-            "packetnum": data[3],
+            "packet_num": data[3],
             "timestamp": data[4],
             "rssi": received_data["rssi"],
             "snr": received_data["snr"]
