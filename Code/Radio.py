@@ -107,7 +107,7 @@ class Radio:
         self.send((bandwidth, spreading, txpower))
 
 
-    def receive(self, packet):
+    def receive(self):
         """
         Receives data through the RFM9X radio and returns it, along with last received signal strength
 
@@ -120,7 +120,7 @@ class Radio:
                 rssi: signal strength, in dB
                 snr: signal-to-noise ratio
         """
-        # packet = self.rfm9x.receive()
+        packet = self.rfm9x.receive()
         # Optionally change the receive timeout from its default of 0.5 seconds:
         # packet = rfm9x.receive(timeout=5.0)
         # If no packet was received during the timeout then None is returned.
@@ -134,15 +134,15 @@ class Radio:
 
             # Assuming the received packet follows our encoding scheme, the first six bytes will be the callsign
             # and the rest of the packet will be integers, each occupying exactly four bytes
-            # if (len(packet) - 6) % 4 != 0:
-            #     print("Message is not appropriate length")
-            # else:
-            #     print("Message is appropriate length")
+            if (len(packet) - 6) % 4 != 0:
+                print("Message is not appropriate length")
+            else:
+                print("Message is appropriate length")
 
             encoded_data = packet[6:]
             data = []
             for idx in range(0, len(encoded_data), 4):
-                #data.append(int.from_bytes(encoded_data[idx:idx + 4], 'big'))
+                # data.append(int.from_bytes(encoded_data[idx:idx + 4], 'big'))
                 data.append(struct.unpack('>f', encoded_data[idx:idx+4])[0])
 
             # Also read the RSSI (signal strength) of the last received message, in dB

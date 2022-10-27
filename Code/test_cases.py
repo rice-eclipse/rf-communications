@@ -10,3 +10,7 @@ for bandwidth in (7800, 10400, 15600, 20800, 31250, 41700, 62500, 125000, 250000
 test_radio_object = Radio()
 for config in test_cases:
     test_radio_object.send_testing_data(config[0], config[1], config[2])
+
+# Multiple packets per test case
+# Put timestamp in message and calculate time of travel
+# What to do if packets drop?
