@@ -4,6 +4,8 @@ import digitalio
 import adafruit_rfm9x
 from collections.abc import Iterable
 import struct
+# import yaml
+# import time
 
 # Unified class for sending and receiving data
 # Much from:
@@ -12,7 +14,14 @@ import struct
 
 class Radio:
     def __init__(self):
-        self.RADIO_FREQ_MHZ = 433.0
+        # NOTICE: A new Radio will NOT work!! You must load a config!!
+        self.radio_freq_mhz = 433.0
+        self.packets_per_transmit = 1
+        self.transmit_per_second = 1  # Not sure how useful this will be on the rocket, but it's good for testing
+        self.packet_size_bytes = 0
+        self.data_types = {}
+        self.data_order = []
+        self.callsign = "CLSIGN"
 
         # Initialize SPI
         self.spi = busio.SPI(board.SCK, MOSI=board.MOSI, MISO=board.MISO)
@@ -26,8 +35,7 @@ class Radio:
         self.LED.direction = digitalio.Direction.OUTPUT
 
         # Create an instance of RFM9x
-
-        self.rfm9x = adafruit_rfm9x.RFM9x(self.spi, self.cs, self.reset, self.RADIO_FREQ_MHZ, baudrate=10000000)
+        self.rfm9x = adafruit_rfm9x.RFM9x(self.spi, self.cs, self.reset, self.radio_freq_mhz, baudrate=10000000)
         # Optional parameter baudrate of connection between rfm9x and SPI (baudrate is equal to bitrate)
         # Default baud rate is 10MHz but that may be too fast
         # If issues arise, decrease to 1MHz
@@ -49,21 +57,28 @@ class Radio:
         # Bitrate Budget:
         # https://docs.google.com/spreadsheets/d/1BNU0LOl0tzaBlsRqHiAFNp9Y_h9E01Kwud-uezHMNdA/edit#gid=1938337728
 
-        # Every value should be an integer that can be stored in 4 bytes
+        # The length of each value in data is determined by its position and the config
         # Remember, packets can't be longer than 252 bytes!
 
+        # If data is shorter than self.data_order refuse to send packet
+        if len(self.data_order) != len(data):
+            print("Send data is not the appropriate length; check the config")
+            return
+
         # 6-Byte FCC License Callsign - required for every packet
-        callsign = bytes("CLSIGN", 'ASCII')
+        # Callsign is not in data_order because it is required for every packet
+        callsign = bytes(self.callsign, 'ASCII')
 
         data_bytearray = bytearray()
         data_bytearray.extend(callsign)
 
-        for num in data:
-            # data_bytearray.extend(num.to_bytes(4, 'big'))
-            data_bytearray.extend(struct.pack('>f', float(num)))
+        for name, val in zip(self.data_order, data):
+            data_type = self.data_types[name]
+            data_bytearray.extend(struct.pack(f">{data_type}", val))
 
         # To send a message, call send()
         self.rfm9x.send(bytes(data_bytearray))
+        # return bytes(data_bytearray)
 
     def send_flight_data(self, acceleration, gyro, magnetic, altitude, gps, temperature):
         """
@@ -91,20 +106,18 @@ class Radio:
 
     def receive(self):
         """
-        Receives data through the RFM9X radio and returns it, along with last received signal strength
+        Receives data through the RFM9X radio and returns it as a dictionary,
+        including signal-to-noise ratio and last received signal strength
 
         Parameters:
             None
 
         Returns:
-            Dictionary w/ keys:
-                data: a tuple of floats
-                rssi: signal strength, in dB
-                snr: signal-to-noise ratio
+            Dictionary w/ all keys in the config data_types, along with 'rssi' and 'snr'
         """
         packet = self.rfm9x.receive()
         # Optionally change the receive timeout (how long until it gives up) from its default of 0.5 seconds:
-        # packet = rfm9x.receive(timeout=5.0)
+        packet = self.rfm9x.receive(timeout=1/self.transmit_per_second)
         # If no packet was received during the timeout then None is returned.
         if packet is None:
             # Packet has not been received
@@ -121,91 +134,69 @@ class Radio:
                 print("Message is not appropriate length")
                 return None
 
+            # Cut off callsign; we don't need it (maybe check to make sure it's our packet?)
             encoded_data = packet[6:]
             data = []
-            for idx in range(0, len(encoded_data), 4):
-                # data.append(int.from_bytes(encoded_data[idx:idx + 4], 'big'))
-                data.append(struct.unpack('>f', encoded_data[idx:idx+4])[0])
+            for name in self.data_order:
+                data_type = self.data_types[name]
+                bytes_size = struct.calcsize(data_type)
+                this_data = encoded_data[:bytes_size]
+                encoded_data = encoded_data[bytes_size:]
+                data.append(struct.unpack(f">{data_type}", this_data)[0])
 
             # Also read the RSSI (signal strength) of the last received message, in dB
             rssi = self.rfm9x.last_rssi
+            # rssi = 1.0
 
             # Also also read the SNR (Signal-to-Noise Ratio) of the last message
             snr = self.rfm9x.last_snr
+            # snr = 1.0
 
             # Return data and other info
-            return {
-                "data": tuple(data),
-                "rssi": rssi,
-                "snr": snr
-            }
+            return_dict = {"rssi": rssi, "snr": snr}
+            for name, val in zip(self.data_order, data):
+                return_dict[name] = val
+            return return_dict
 
-    def reformat_as_flight_data(self, received_data):
+    def load_config(self, config_dict):
         """
-        Takes a dictionary from receive() function and re-organizes it into flight variables
-        This could be static I guess, but it's nice to bundle it with Radio I think
+        Takes a dictionary of config values and applies them to the current radio object
+        Data types are in the format of struct - https://docs.python.org/3/library/struct.html
 
         Parameters:
-            received_data: a dictionary with keys:
-                data: a tuple of floats that was received
-                rssi: rssi (in dB)
-                snr: snr
+            config_dict - a dictionary of configuration information, likely from a config YAML file
 
         Returns:
-            Dictionary with keys:
-                acceleration: 3-tuple of floats
-                gyro: 3-tuple, floats
-                magnetic: 3-tuple, floats
-                altitude: float
-                gps: 2-tuple, floats
-                temperature: float
-        """
-        data = received_data["data"]
-        reorganized_data = {
-            "acceleration": (data[0], data[1], data[2]),
-            "gyro": (data[3], data[4], data[5]),
-            "magnetic": (data[6], data[7], data[8]),
-            "altitude": data[9],
-            "gps": (data[10], data[11]),
-            "temperature": data[12],
-            "rssi": received_data["rssi"],
-            "snr": received_data["snr"]}
-        return reorganized_data
-
-    def reformat_as_testing_data(self, received_data):
-        """
-        Takes a dictionary generated from a radio packet using receive() and reformats it for testing
-
-        Parameters:
-            received_data: a dictionary with keys:
-                data: a tuple of floats that was received
-                rssi: rssi (in dB)
-                snr: snr
-
-        Returns:
-            Dictionary with keys:
-                bandwidth
-                spreading
-                tx_power
-                packet_num
-                timestamp
-                rssi
-                snr
+            None
         """
 
-        data = received_data["data"]
+        self.callsign = config_dict["callsign"]
+        self.packets_per_transmit = config_dict["packets_per_transmit"]
+        self.transmit_per_second = config_dict["transmit_per_second"]
+        self.data_types = config_dict["data_types"]
+        self.data_order = config_dict["data_order"]
+        # data_order should be composed solely of all keys from data_sizes!
+        # (and vice versa)
+        self.packet_size_bytes = 6
+        for val in self.data_types.values():
+            self.packet_size_bytes += struct.calcsize(val)
 
-        if len(data) != 5:
-            print("Received data isn't the right length")
-            return None
+        if self.packet_size_bytes >= 252:
+            print("PACKET SIZE TOO LARGE! DO NOT CONTINUE!")
+            return
 
-        reorganized_data = {
-            "bandwidth": data[0],
-            "spreading": data[1],
-            "txpower": data[2],
-            "packet_num": data[3],
-            "timestamp": data[4],
-            "rssi": received_data["rssi"],
-            "snr": received_data["snr"]
-        }
-        return reorganized_data
+        print(f"Radio configuration loaded! Now configured for {self.packet_size_bytes}-byte packets!")
+
+#
+# with open("testconfig.yaml", "r") as stream:
+#     config_dict = yaml.safe_load(stream)
+#
+# radio = Radio()
+# radio.load_config(config_dict)
+# tn = time.time_ns()
+# packet = radio.send((tn, 2, 3, 4, 5))
+# print(packet)
+# print(len(packet))
+# received = radio.receive(packet)
+# print(received)
+# print(tn)
