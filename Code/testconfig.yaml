@@ -8,8 +8,8 @@ data_order:
   - tx_power
   - packet_num
 data_types:
-    timestamp: d
+    timestamp: Q
     bandwidth: i
-    spreading: i
-    tx_power: H
+    spreading: h
+    tx_power: h
     packet_num: H

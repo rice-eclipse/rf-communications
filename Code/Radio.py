@@ -48,7 +48,7 @@ class Radio:
         Sends data through the RFM9X radio.
 
         Parameters:
-            data: a list of floats of any length
+            data: a list of numbers conforming to the order and types described in the loaded config file
 
         Returns:
             None
@@ -115,7 +115,7 @@ class Radio:
         Returns:
             Dictionary w/ all keys in the config data_types, along with 'rssi' and 'snr'
         """
-        packet = self.rfm9x.receive()
+        # packet = self.rfm9x.receive()
         # Optionally change the receive timeout (how long until it gives up) from its default of 0.5 seconds:
         packet = self.rfm9x.receive(timeout=1/self.transmit_per_second)
         # If no packet was received during the timeout then None is returned.
