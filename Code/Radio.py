@@ -31,8 +31,8 @@ class Radio:
         self.reset = digitalio.DigitalInOut(board.D6)
 
         # Define the onboard LED
-        self.LED = digitalio.DigitalInOut(board.D13)
-        self.LED.direction = digitalio.Direction.OUTPUT
+        # self.LED = digitalio.DigitalInOut(board.D13)
+        # self.LED.direction = digitalio.Direction.OUTPUT
 
         # Create an instance of RFM9x
         self.rfm9x = adafruit_rfm9x.RFM9x(self.spi, self.cs, self.reset, self.radio_freq_mhz, baudrate=10000000)
@@ -121,41 +121,31 @@ class Radio:
         # If no packet was received during the timeout then None is returned.
         if packet is None:
             # Packet has not been received
-            self.LED.value = False
+            # self.LED.value = False
             return None
         else:
             # Received a packet!
-            self.LED.value = True
-
-            # Assuming the received packet follows our encoding scheme, the first six bytes will be the callsign
-            # and the rest of the packet will be integers, each occupying exactly four bytes
-            if (len(packet) - 6) % 4 != 0:
-                # Packet isn't formatted like CALLSIGN-4BYTE-4BYTE-4BYTE
-                print("Message is not appropriate length")
-                return None
+            # self.LED.value = True
 
             # Cut off callsign; we don't need it (maybe check to make sure it's our packet?)
             encoded_data = packet[6:]
-            data = []
+
+            # Build a list of all the data we've received
+            return_dict = {}
             for name in self.data_order:
                 data_type = self.data_types[name]
                 bytes_size = struct.calcsize(data_type)
                 this_data = encoded_data[:bytes_size]
                 encoded_data = encoded_data[bytes_size:]
-                data.append(struct.unpack(f">{data_type}", this_data)[0])
+                unpacked_data = struct.unpack(f">{data_type}", this_data)[0]
+                return_dict[name] = unpacked_data
 
             # Also read the RSSI (signal strength) of the last received message, in dB
-            rssi = self.rfm9x.last_rssi
-            # rssi = 1.0
+            return_dict["rssi"] = self.rfm9x.last_rssi
 
-            # Also also read the SNR (Signal-to-Noise Ratio) of the last message
-            snr = self.rfm9x.last_snr
-            # snr = 1.0
+            # Also read the SNR (Signal-to-Noise Ratio) of the last message
+            return_dict["snr"] = self.rfm9x.last_snr
 
-            # Return data and other info
-            return_dict = {"rssi": rssi, "snr": snr}
-            for name, val in zip(self.data_order, data):
-                return_dict[name] = val
             return return_dict
 
     def load_config(self, config_dict):

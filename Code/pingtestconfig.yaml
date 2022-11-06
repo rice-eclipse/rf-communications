@@ -1,0 +1,21 @@
+packets_per_transmit: 1
+transmit_per_second: 5
+callsign: CLSIGN
+data_order:
+  - send_time
+  - ping_time
+  - bandwidth
+  - spreading
+  - tx_power
+  - packet_num
+  - orig_snr
+  - orig_rssi
+data_types:
+    send_time: Q
+    ping_time: Q
+    bandwidth: i
+    spreading: h
+    tx_power: h
+    packet_num: H
+    orig_snr: d
+    orig_rssi: d

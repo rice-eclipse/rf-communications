@@ -1,6 +1,5 @@
 import yaml
 import time
-import struct
 from Radio import Radio
 
 test_cases = []
@@ -21,9 +20,9 @@ with open("testconfig.yaml", "r") as stream:
 test_radio_object.load_config(config_dict)
 
 for config in test_cases:
-    # test_radio_object.rfm9x.signal_bandwidth = config[0]
-    # test_radio_object.rfm9x.spreading_factor = config[1]
-    # test_radio_object.rfm9x.tx_power = config[2]
+    test_radio_object.rfm9x.signal_bandwidth = config[0]
+    test_radio_object.rfm9x.spreading_factor = config[1]
+    test_radio_object.rfm9x.tx_power = config[2]
     for msg_num in range(10):
         # Send multiple messages to ensure reception and also detect how many packets were dropped
         timestamp = time.time_ns()
@@ -37,20 +36,4 @@ for config in test_cases:
 
 # Blog with nice floating precision chart https://blog.demofox.org/2017/11/21/floating-point-precision/
 
-
-# Testing struct data sizes
-# If a value doesn't fit into a data type, it will throw an error
-# print(time.time_ns())
-#
-# p = struct.pack(">f", time.time_ns())
-# u = struct.unpack(">f", p)[0]
-# print(u)
-
-# Maximum values (u = unsigned, s = signed)
-# ushortint: 65535
-# uint: 4294967295
-# ulongint: 4294967295
-# ulonglongint: 18446744073709551615 -- enough to store epoch time in nanoseconds
-# slonglongint: 9223372036854775807  -- will also work
-
-# time:         1667339321198387200
+# TODO: Either keep track of stats and display after sending, or make a new script to read all the data in log.tsv and display it as some graphs
