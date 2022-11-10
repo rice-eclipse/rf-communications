@@ -33,8 +33,11 @@ with open("log.tsv", 'a', buffering=1) as file:  # this is slow but we could pro
                 packet = radio.receive()
                 if packet is not None:
                     write_string = ""
-                    for key, value in packet.items():
-                        write_string += f"{key}: {value}\t"
+                    # Maybe write the values in a specific order
+                    # for key, value in packet.items():
+                    #     write_string += f"{key}: {value}\t"
+                    for key in radio.data_order.extend(["rssi", "snr"]):
+                        write_string += f"{packet[key]}\t"
                     write_string += f"receive_time: {time.time_ns()}\n"
                     file.write(write_string)
                     file.flush()

@@ -8,8 +8,8 @@ data_order:
   - spreading
   - tx_power
   - packet_num
-  - orig_snr
   - orig_rssi
+  - orig_snr
 data_types:
     send_time: Q
     ping_time: Q
@@ -17,5 +17,5 @@ data_types:
     spreading: h
     tx_power: h
     packet_num: H
-    orig_snr: d
     orig_rssi: d
+    orig_snr: d

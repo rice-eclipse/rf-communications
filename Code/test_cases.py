@@ -37,3 +37,22 @@ for config in test_cases:
 # Blog with nice floating precision chart https://blog.demofox.org/2017/11/21/floating-point-precision/
 
 # TODO: Either keep track of stats and display after sending, or make a new script to read all the data in log.tsv and display it as some graphs
+
+"""
+Independent Variables:
+    Bandwidth
+    Spreading Factor
+    Transmitting Power
+Dependent variables:
+    Number of packets caught
+    RSSI (signal strength)
+    SNR
+    Flight time
+    
+Highest Level:
+Average RSSI over all Spreading, Power vs Each Bandwidth
+Average RSSI over all Bandwidth, Power vs Each Spreading
+Average RSSI over all Bandwidth, Spreading vs Each Power
+3D Graph: X - Bandwidth, Y - Spreading, Z - Power, color of point is strength (red = bad, blue = good)
+
+"""
