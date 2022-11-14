@@ -4,6 +4,10 @@ import matplotlib.pyplot as plt
 import yaml
 import random
 
+# Referneces:
+# https://jakevdp.github.io/PythonDataScienceHandbook/04.12-three-dimensional-plotting.html
+# https://jakevdp.github.io/PythonDataScienceHandbook/04.02-simple-scatter-plots.html
+
 
 def load_data_from_file(config, datafile):
     # Datafile must be .tsv (or equivalently-formatted)
@@ -42,18 +46,25 @@ for point in data:
 assert len(x) == len(y) == len(z) == len(col)
 print("Assertion successful")
 
-ax.scatter3D(numpy.array(x), numpy.array(y), numpy.array(z))#, c=numpy.array(col), alpha=0.5, cmap='viridis')
+ax.scatter3D(numpy.log(numpy.array(x)), numpy.array(y), numpy.array(z), c=numpy.array(col), alpha=1, cmap='Reds')
 # plt.colorbar()  # show color scale
+# plt.colorbar is not working for some reason. Not worth fixing
 
+# Axes labels
+ax.set_xlabel('Log of Bandwidth')  # This is log to make the graph more readable. Trends should be unchanged
+ax.set_ylabel('Spreading')
+ax.set_zlabel('Transmission Power')
 
-ax.set_ylim3d(min(x), max(x))
-ax.set_xlim3d(min(y), max(y))
-ax.set_zlim3d(min(z), max(z))
+# This causes the graph to glitch out; don't use it
+# ax.set_ylim3d(min(x), max(x))
+# ax.set_xlim3d(min(y), max(y))
+# ax.set_zlim3d(min(z), max(z))
 
-# Example
+# Example, could be removed. Helpful in case something goes wrong
 # zdata = 15 * numpy.random.random(100)
 # xdata = numpy.sin(zdata) + 0.1 * numpy.random.randn(100)
 # ydata = numpy.cos(zdata) + 0.1 * numpy.random.randn(100)
 # ax.scatter3D(xdata, ydata, zdata, c=zdata, cmap='Greens')
+# plt.colorbar()
 
 plt.show()
