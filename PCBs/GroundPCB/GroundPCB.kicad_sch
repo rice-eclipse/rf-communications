@@ -6,9 +6,10 @@
 
   (title_block
     (title "NARWAL")
-    (date "2022-11-13")
+    (date "2022-11-19")
     (rev "1")
     (company "Rice Eclipse")
+    (comment 1 "RF Communications")
   )
 
   (lib_symbols
@@ -1536,7 +1537,6 @@
     )
   )
 
-
   (junction (at 109.22 196.85) (diameter 0) (color 0 0 0 0)
     (uuid 01433136-050d-424b-98d2-26b98330a957)
   )
@@ -2835,7 +2835,7 @@
     (property "Reference" "C15" (id 0) (at 213.36 183.515 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
-    (property "Value" "100p" (id 1) (at 213.36 186.055 0)
+    (property "Value" "100n" (id 1) (at 213.36 186.055 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Footprint" "Capacitor_SMD:C_1206_3216Metric" (id 2) (at 220.6752 187.96 0)
@@ -2907,7 +2907,7 @@
     (in_bom yes) (on_board yes)
     (uuid 0e209cfa-c7fe-4d64-88d9-c26302a40471)
     (property "Reference" "C14" (id 0) (at 209.55 60.96 90))
-    (property "Value" "0.1u" (id 1) (at 209.55 63.5 90))
+    (property "Value" "100n" (id 1) (at 209.55 63.5 90))
     (property "Footprint" "Capacitor_SMD:C_1206_3216Metric" (id 2) (at 213.36 56.1848 0)
       (effects (font (size 1.27 1.27)) hide)
     )
@@ -2956,7 +2956,7 @@
     (in_bom yes) (on_board yes)
     (uuid 17650cc2-0ea9-4df9-8435-fe0eea675be7)
     (property "Reference" "C2" (id 0) (at 82.55 222.25 90))
-    (property "Value" "0.01u" (id 1) (at 82.55 224.79 90))
+    (property "Value" "10n" (id 1) (at 82.55 224.79 90))
     (property "Footprint" "Capacitor_SMD:C_1206_3216Metric" (id 2) (at 86.36 227.6348 0)
       (effects (font (size 1.27 1.27)) hide)
     )
@@ -2986,7 +2986,7 @@
     (in_bom yes) (on_board yes)
     (uuid 1ae219e9-8d6d-4f2f-b8ad-7abb68ff887e)
     (property "Reference" "C19" (id 0) (at 321.31 50.8 90))
-    (property "Value" "0.47u" (id 1) (at 321.31 53.34 90))
+    (property "Value" "100n" (id 1) (at 321.31 53.34 90))
     (property "Footprint" "Capacitor_SMD:C_1206_3216Metric" (id 2) (at 325.12 56.1848 0)
       (effects (font (size 1.27 1.27)) hide)
     )
@@ -3035,7 +3035,7 @@
     (in_bom yes) (on_board yes)
     (uuid 2ae17081-2113-4170-b77b-dd0f8e7a72d2)
     (property "Reference" "C5" (id 0) (at 113.03 222.25 90))
-    (property "Value" "0.01u" (id 1) (at 113.03 224.79 90))
+    (property "Value" "10n" (id 1) (at 113.03 224.79 90))
     (property "Footprint" "Capacitor_SMD:C_1206_3216Metric" (id 2) (at 116.84 227.6348 0)
       (effects (font (size 1.27 1.27)) hide)
     )
@@ -3398,8 +3398,8 @@
   (symbol (lib_id "Device:C") (at 342.9 54.61 0) (unit 1)
     (in_bom yes) (on_board yes)
     (uuid 56498129-9393-4382-9cef-d7785e68e019)
-    (property "Reference" "C20" (id 0) (at 346.71 54.61 0))
-    (property "Value" "0.47u" (id 1) (at 346.71 57.15 0))
+    (property "Reference" "C20" (id 0) (at 347.345 54.61 0))
+    (property "Value" "100n" (id 1) (at 347.345 57.15 0))
     (property "Footprint" "Capacitor_SMD:C_1206_3216Metric" (id 2) (at 343.8652 58.42 0)
       (effects (font (size 1.27 1.27)) hide)
     )
@@ -3695,7 +3695,7 @@
   (symbol (lib_id "Connector:TestPoint_Small") (at 223.52 177.8 90) (unit 1)
     (in_bom yes) (on_board yes)
     (uuid 830710d1-ce35-49da-b16f-ccb10910325d)
-    (property "Reference" "TP13" (id 0) (at 225.425 175.895 90)
+    (property "Reference" "TP13" (id 0) (at 226.695 175.895 90)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" " " (id 1) (at 223.52 176.53 0)
@@ -3957,7 +3957,7 @@
     (in_bom yes) (on_board yes)
     (uuid 91caf652-ecda-4df6-8747-017e460ff584)
     (property "Reference" "C7" (id 0) (at 115.57 207.01 90))
-    (property "Value" "0.33u" (id 1) (at 115.57 209.55 90))
+    (property "Value" "330n" (id 1) (at 115.57 209.55 90))
     (property "Footprint" "Capacitor_SMD:C_1206_3216Metric" (id 2) (at 119.38 202.2348 0)
       (effects (font (size 1.27 1.27)) hide)
     )
@@ -4271,7 +4271,7 @@
     (in_bom yes) (on_board yes)
     (uuid b6f34181-b7d9-4664-9f3e-6973737275df)
     (property "Reference" "C13" (id 0) (at 209.55 44.45 90))
-    (property "Value" "10u" (id 1) (at 209.55 46.99 90))
+    (property "Value" "1u" (id 1) (at 209.55 46.99 90))
     (property "Footprint" "Capacitor_SMD:C_1206_3216Metric" (id 2) (at 213.36 49.8348 0)
       (effects (font (size 1.27 1.27)) hide)
     )
@@ -4335,7 +4335,7 @@
     (property "Reference" "C16" (id 0) (at 213.36 259.715 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
-    (property "Value" "100p" (id 1) (at 213.36 262.255 0)
+    (property "Value" "100n" (id 1) (at 213.36 262.255 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Footprint" "Capacitor_SMD:C_1206_3216Metric" (id 2) (at 220.6752 264.16 0)
@@ -5222,7 +5222,7 @@
       (reference "C1") (unit 1) (value "12p") (footprint "Capacitor_SMD:C_1206_3216Metric")
     )
     (path "/17650cc2-0ea9-4df9-8435-fe0eea675be7"
-      (reference "C2") (unit 1) (value "0.01u") (footprint "Capacitor_SMD:C_1206_3216Metric")
+      (reference "C2") (unit 1) (value "10n") (footprint "Capacitor_SMD:C_1206_3216Metric")
     )
     (path "/a53ab678-9dec-4b70-b8b1-2aa2dacdddd3"
       (reference "C3") (unit 1) (value "15p") (footprint "Capacitor_SMD:C_1206_3216Metric")
@@ -5231,13 +5231,13 @@
       (reference "C4") (unit 1) (value "330p") (footprint "Capacitor_SMD:C_1206_3216Metric")
     )
     (path "/2ae17081-2113-4170-b77b-dd0f8e7a72d2"
-      (reference "C5") (unit 1) (value "0.01u") (footprint "Capacitor_SMD:C_1206_3216Metric")
+      (reference "C5") (unit 1) (value "10n") (footprint "Capacitor_SMD:C_1206_3216Metric")
     )
     (path "/19b0f565-747f-463b-a462-59a985266175"
       (reference "C6") (unit 1) (value "10u") (footprint "Capacitor_SMD:C_1206_3216Metric")
     )
     (path "/91caf652-ecda-4df6-8747-017e460ff584"
-      (reference "C7") (unit 1) (value "0.33u") (footprint "Capacitor_SMD:C_1206_3216Metric")
+      (reference "C7") (unit 1) (value "330n") (footprint "Capacitor_SMD:C_1206_3216Metric")
     )
     (path "/059c0705-8396-4665-8988-e0cc5b143c95"
       (reference "C8") (unit 1) (value "2.2u") (footprint "Capacitor_SMD:C_1206_3216Metric")
@@ -5255,16 +5255,16 @@
       (reference "C12") (unit 1) (value "39p") (footprint "Capacitor_SMD:C_1206_3216Metric")
     )
     (path "/b6f34181-b7d9-4664-9f3e-6973737275df"
-      (reference "C13") (unit 1) (value "10u") (footprint "Capacitor_SMD:C_1206_3216Metric")
+      (reference "C13") (unit 1) (value "1u") (footprint "Capacitor_SMD:C_1206_3216Metric")
     )
     (path "/0e209cfa-c7fe-4d64-88d9-c26302a40471"
-      (reference "C14") (unit 1) (value "0.1u") (footprint "Capacitor_SMD:C_1206_3216Metric")
+      (reference "C14") (unit 1) (value "100n") (footprint "Capacitor_SMD:C_1206_3216Metric")
     )
     (path "/01a936b3-6c38-4036-8b76-f79360849d4a"
-      (reference "C15") (unit 1) (value "100p") (footprint "Capacitor_SMD:C_1206_3216Metric")
+      (reference "C15") (unit 1) (value "100n") (footprint "Capacitor_SMD:C_1206_3216Metric")
     )
     (path "/c3084e0e-e25f-430e-8bff-d9f3cf062131"
-      (reference "C16") (unit 1) (value "100p") (footprint "Capacitor_SMD:C_1206_3216Metric")
+      (reference "C16") (unit 1) (value "100n") (footprint "Capacitor_SMD:C_1206_3216Metric")
     )
     (path "/f83e5b05-ee89-4771-b336-a7e53757239c"
       (reference "C17") (unit 1) (value "1u") (footprint "Capacitor_SMD:C_1206_3216Metric")
@@ -5273,10 +5273,10 @@
       (reference "C18") (unit 1) (value "1u") (footprint "Capacitor_SMD:C_1206_3216Metric")
     )
     (path "/1ae219e9-8d6d-4f2f-b8ad-7abb68ff887e"
-      (reference "C19") (unit 1) (value "0.47u") (footprint "Capacitor_SMD:C_1206_3216Metric")
+      (reference "C19") (unit 1) (value "100n") (footprint "Capacitor_SMD:C_1206_3216Metric")
     )
     (path "/56498129-9393-4382-9cef-d7785e68e019"
-      (reference "C20") (unit 1) (value "0.47u") (footprint "Capacitor_SMD:C_1206_3216Metric")
+      (reference "C20") (unit 1) (value "100n") (footprint "Capacitor_SMD:C_1206_3216Metric")
     )
     (path "/638bb3ce-2ece-4bf6-8f0d-a5a1cf43d309"
       (reference "D1") (unit 1) (value "LED") (footprint "LED_THT:LED_D3.0mm")
