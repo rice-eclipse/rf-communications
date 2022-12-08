@@ -1,4 +1,4 @@
-20403288466410539
+20404961278663171
 Audio_Module
 Reverb_BTDR-1H
 Digital Reverberation Unit, http://www.belton.co.kr/inc/downfile.php?seq=17&file=pdf (footprint from http://www.uk-electronic.de/PDF/BTDR-1.pdf)
@@ -52122,7 +52122,7 @@ BATT-S8411-45R
 2
 2
 Eclipse_RF_Footprints
-CHOKE-LQH44PN4R7MP0L
+CHOKE-LQH32NH4R7J23L
 
 
 0
@@ -52177,6 +52177,13 @@ Integrated Circuit
 0
 25
 25
+Eclipse_RF_Footprints
+SWITCH-L101011MS02Q
+
+
+0
+2
+2
 Eclipse_RF_Footprints
 TRX-RFM98W-433
 
