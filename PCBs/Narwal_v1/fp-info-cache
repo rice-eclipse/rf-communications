@@ -1,4 +1,4 @@
-20404961278663171
+20404966900127738
 Audio_Module
 Reverb_BTDR-1H
 Digital Reverberation Unit, http://www.belton.co.kr/inc/downfile.php?seq=17&file=pdf (footprint from http://www.uk-electronic.de/PDF/BTDR-1.pdf)
@@ -52171,19 +52171,19 @@ SMA-LPRS-CONNECTOR
 5
 5
 Eclipse_RF_Footprints
+SWITCH-500SSP1S1M2QEA
+
+
+0
+3
+3
+Eclipse_RF_Footprints
 SWITCH-HSWA4-63DR+
 DG984-1
 Integrated Circuit
 0
 25
 25
-Eclipse_RF_Footprints
-SWITCH-L101011MS02Q
-
-
-0
-2
-2
 Eclipse_RF_Footprints
 TRX-RFM98W-433
 
