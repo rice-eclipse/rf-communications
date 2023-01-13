@@ -1,0 +1,7 @@
+packets_per_transmit: 1
+transmit_per_second: 5
+callsign: CLSIGN
+data_order:
+  - index
+data_types:
+  index: h
