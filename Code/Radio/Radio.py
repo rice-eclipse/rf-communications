@@ -74,7 +74,7 @@ class Radio:
         data_bytearray.extend(callsign)
 
         for data_type, val in zip(self.data_types, data):
-            data_bytearray.extend(struct.pack(f">{data_type.values()[0]}", val))
+            data_bytearray.extend(struct.pack(f">{list(data_type.values())[0]}", val))
 
         # To send a message, call send()
         self.rfm9x.send(bytes(data_bytearray))
@@ -170,7 +170,7 @@ class Radio:
         self.data_types = config_dict["data_types"]
         self.packet_size_bytes = 6
         for val in self.data_types:
-            self.packet_size_bytes += struct.calcsize(val.values()[0])
+            self.packet_size_bytes += struct.calcsize(list(val.values())[0])
 
         if self.packet_size_bytes >= 252:
             print("PACKET SIZE TOO LARGE! DO NOT CONTINUE!")
