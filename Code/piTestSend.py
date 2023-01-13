@@ -1,5 +1,5 @@
 import yaml
-from Radio import Radio
+from Code.Radio.Radio import Radio
 
 # Create Radio object
 radio = Radio()

@@ -21,16 +21,15 @@ class Radio:
         self.packets_per_transmit = 1
         self.transmit_per_second = 1  # Not sure how useful this will be on the rocket, but it's good for testing
         self.packet_size_bytes = 0
-        self.data_types = {}
-        self.data_order = []
+        self.data_types = []
         self.callsign = "CLSIGN"
 
         # Initialize SPI
         self.spi = busio.SPI(board.SCK, MOSI=board.MOSI, MISO=board.MISO)
 
         # Define CS and RST pins connected to the radio
-        self.cs = digitalio.DigitalInOut(board.D5)
-        self.reset = digitalio.DigitalInOut(board.D6)
+        self.cs = digitalio.DigitalInOut(board.D5)  # board.ce1
+        self.reset = digitalio.DigitalInOut(board.D6)  # board.d25
 
         # Define the onboard LED
         # self.LED = digitalio.DigitalInOut(board.D13)
@@ -63,7 +62,7 @@ class Radio:
         # Remember, packets can't be longer than 252 bytes!
 
         # If data is shorter than self.data_order refuse to send packet
-        if len(self.data_order) != len(data):
+        if len(self.data_types) != len(data):
             print("Send data is not the appropriate length; check the config")
             return
 
@@ -74,9 +73,8 @@ class Radio:
         data_bytearray = bytearray()
         data_bytearray.extend(callsign)
 
-        for name, val in zip(self.data_order, data):
-            data_type = self.data_types[name]
-            data_bytearray.extend(struct.pack(f">{data_type}", val))
+        for data_type, val in zip(self.data_types, data):
+            data_bytearray.extend(struct.pack(f">{data_type.values()[0]}", val))
 
         # To send a message, call send()
         self.rfm9x.send(bytes(data_bytearray))
@@ -134,8 +132,7 @@ class Radio:
 
             # Build a list of all the data we've received
             return_dict = {}
-            for name in self.data_order:
-                data_type = self.data_types[name]
+            for name, data_type in self.data_types:
                 bytes_size = struct.calcsize(data_type)
                 this_data = encoded_data[:bytes_size]
                 encoded_data = encoded_data[bytes_size:]
@@ -166,9 +163,6 @@ class Radio:
         self.packets_per_transmit = config_dict["packets_per_transmit"]
         self.transmit_per_second = config_dict["transmit_per_second"]
         self.data_types = config_dict["data_types"]
-        self.data_order = config_dict["data_order"]
-        # data_order should be composed solely of all keys from data_sizes!
-        # (and vice versa)
         self.packet_size_bytes = 6
         for val in self.data_types.values():
             self.packet_size_bytes += struct.calcsize(val)
