@@ -25,24 +25,24 @@ class Radio:
         self.callsign = "CLSIGN"
 
         # Initialize SPI
-        self.spi = busio.SPI(board.SCK, MOSI=board.MOSI, MISO=board.MISO)
+        # self.spi = busio.SPI(board.SCK, MOSI=board.MOSI, MISO=board.MISO)
 
         # Define CS and RST pins connected to the radio
-        self.cs = digitalio.DigitalInOut(board.D5)  # board.ce1
-        self.reset = digitalio.DigitalInOut(board.D6)  # board.d25
+        # self.cs = digitalio.DigitalInOut(board.D5)  # board.ce1
+        # self.reset = digitalio.DigitalInOut(board.D6)  # board.d25
 
         # Define the onboard LED
         # self.LED = digitalio.DigitalInOut(board.D13)
         # self.LED.direction = digitalio.Direction.OUTPUT
 
         # Create an instance of RFM9x
-        self.rfm9x = adafruit_rfm9x.RFM9x(self.spi, self.cs, self.reset, self.radio_freq_mhz, baudrate=10_000_000)
+        # self.rfm9x = adafruit_rfm9x.RFM9x(self.spi, self.cs, self.reset, self.radio_freq_mhz, baudrate=10_000_000)
         # Optional parameter baudrate of connection between rfm9x and SPI (baudrate is equal to bitrate)
         # Default baud rate is 10MHz but that may be too fast
         # If issues arise, decrease to 1MHz
 
         # Adjust transmitting power (dB)
-        self.rfm9x.tx_power = 20
+        # self.rfm9x.tx_power = 20
 
     def send(self, data):
         """
