@@ -10,4 +10,4 @@ with open("pitestconfig.yaml", "r") as stream:
 radio.load_config(config_dict)
 
 for i in range(10):
-    radio.send((i))
+    radio.send((i,))
