@@ -11,15 +11,15 @@ import struct
 # Much from:
 # https://learn.adafruit.com/adafruit-rfm69hcw-and-rfm96-rfm95-rfm98-lora-packet-padio-breakouts/circuitpython-for-rfm9x-lora
 
-# TODO: Make a config constructor, add exceptions for when things go wrong, change config file to make it simpler - {name: type}
+# TODO: Make a config constructor, add exceptions for when things go wrong
 
 
 class Radio:
     def __init__(self):
         # NOTICE: A new Radio will NOT work!! You must load a config!!
-        self.radio_freq_mhz = 433.0  # move to config
+        self.radio_freq_mhz = 433.0
         self.packets_per_transmit = 1
-        self.transmit_per_second = 1  # Not sure how useful this will be on the rocket, but it's good for testing
+        # self.transmit_per_second = 1  # Not sure how useful this will be on the rocket, but it's good for testing
         self.packet_size_bytes = 0
         self.data_types = []
         self.callsign = "CLSIGN"
@@ -42,7 +42,7 @@ class Radio:
         # If issues arise, decrease to 1MHz
 
         # Adjust transmitting power (dB)
-        self.rfm9x.tx_power = 23
+        self.rfm9x.tx_power = 20
 
     def send(self, data):
         """
@@ -117,7 +117,7 @@ class Radio:
         """
         # packet = self.rfm9x.receive()
         # Optionally change the receive timeout (how long until it gives up) from its default of 0.5 seconds:
-        packet = self.rfm9x.receive(timeout=1/self.transmit_per_second)
+        packet = self.rfm9x.receive()#timeout=1/self.transmit_per_second)
         # If no packet was received during the timeout then None is returned.
         if packet is None:
             # Packet has not been received
@@ -159,13 +159,16 @@ class Radio:
             None
         """
 
+        self.radio_freq_mhz = config_dict["frequency_mhz"]
         self.callsign = config_dict["callsign"]
         self.packets_per_transmit = config_dict["packets_per_transmit"]
-        self.transmit_per_second = config_dict["transmit_per_second"]
+        # self.transmit_per_second = config_dict["transmit_per_second"]
+        self.cs = digitalio.DigitalInOut(getattr(board,config_dict["cs_pin"]))
+        self.reset = digitalio.DigitalInOut(getattr(board,config_dict["reset_pin"]))
         self.data_types = config_dict["data_types"]
         self.packet_size_bytes = 6
-        for val in self.data_types.values():
-            self.packet_size_bytes += struct.calcsize(val)
+        for val in self.data_types:
+            self.packet_size_bytes += struct.calcsize(val.values()[0])
 
         if self.packet_size_bytes >= 252:
             print("PACKET SIZE TOO LARGE! DO NOT CONTINUE!")
