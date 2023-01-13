@@ -36,7 +36,7 @@ while c_idx < len(test_cases):
 
     config = test_cases[c_idx]
 
-    if c_idx >= len(test_cases):
+    if c_idx >= len(test_record):
         test_record.append(None)
 
     radio.rfm9x.signal_bandwidth = config[0]
@@ -59,7 +59,8 @@ while c_idx < len(test_cases):
             attempts += 1
 
     if ack_success:
-        test_record[c_idx] = ack_pack  # looks like an error but it should be fine
+        ack_pack["final_time"] = time.time_ns()
+        test_record[c_idx] = ack_pack
         c_idx += 1
     else:
         print(f"Redoing test {c_idx}; no acknowledgement")

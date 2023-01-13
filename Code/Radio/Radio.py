@@ -19,13 +19,17 @@ class Radio:
         # NOTICE: A new Radio will NOT work!! You must load a config!!
         self.radio_freq_mhz = 433.0
         self.packets_per_transmit = 1
-        # self.transmit_per_second = 1  # Not sure how useful this will be on the rocket, but it's good for testing
+        self.transmit_per_second = 1  # Not sure how useful this will be on the rocket, but it's good for testing
         self.packet_size_bytes = 0
         self.data_types = []
         self.callsign = "CLSIGN"
 
         # Initialize SPI
         self.spi = busio.SPI(board.SCK, MOSI=board.MOSI, MISO=board.MISO)
+
+        self.cs = None
+        self.reset = None
+        self.rfm9x = None
 
         # Define CS and RST pins connected to the radio
         # self.cs = digitalio.DigitalInOut(board.D5)  # board.ce1
@@ -117,7 +121,7 @@ class Radio:
         """
         # packet = self.rfm9x.receive()
         # Optionally change the receive timeout (how long until it gives up) from its default of 0.5 seconds:
-        packet = self.rfm9x.receive()#timeout=1/self.transmit_per_second)
+        packet = self.rfm9x.receive(timeout=1/self.transmit_per_second)
         # If no packet was received during the timeout then None is returned.
         if packet is None:
             # Packet has not been received
@@ -162,7 +166,7 @@ class Radio:
         self.radio_freq_mhz = config_dict["frequency_mhz"]
         self.callsign = config_dict["callsign"]
         self.packets_per_transmit = config_dict["packets_per_transmit"]
-        # self.transmit_per_second = config_dict["transmit_per_second"]
+        self.transmit_per_second = config_dict["transmit_per_second"]
         self.cs = digitalio.DigitalInOut(getattr(board,config_dict["cs_pin"]))
         self.reset = digitalio.DigitalInOut(getattr(board,config_dict["reset_pin"]))
         self.rfm9x = adafruit_rfm9x.RFM9x(self.spi, self.cs, self.reset, self.radio_freq_mhz, baudrate=10_000_000)

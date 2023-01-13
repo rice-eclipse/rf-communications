@@ -26,6 +26,11 @@ for bandwidth in (62500, 125000, 250000, 500000):
 
 print("Tests loaded")
 
+config = test_cases[0]
+radio.rfm9x.signal_bandwidth = config[0]
+radio.rfm9x.spreading_factor = config[1]
+radio.rfm9x.tx_power = config[2]
+
 c_idx = 0
 while True:
     packet = radio.receive()
