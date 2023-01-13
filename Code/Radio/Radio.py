@@ -140,7 +140,7 @@ class Radio:
                 bytes_size = struct.calcsize(list(data_type.values())[0])
                 this_data = encoded_data[:bytes_size]
                 encoded_data = encoded_data[bytes_size:]
-                unpacked_data = struct.unpack(f">{data_type}", this_data)[0]
+                unpacked_data = struct.unpack(f">{list(data_type.values())[0]}", this_data)[0]
                 return_dict[list(data_type.keys())[0]] = unpacked_data
 
             # Also read the RSSI (signal strength) of the last received message, in dB
