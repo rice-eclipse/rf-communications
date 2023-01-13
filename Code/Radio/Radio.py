@@ -36,7 +36,7 @@ class Radio:
         # self.LED.direction = digitalio.Direction.OUTPUT
 
         # Create an instance of RFM9x
-        self.rfm9x = adafruit_rfm9x.RFM9x(self.spi, self.cs, self.reset, self.radio_freq_mhz, baudrate=10000000)
+        self.rfm9x = adafruit_rfm9x.RFM9x(self.spi, self.cs, self.reset, self.radio_freq_mhz, baudrate=10_000_000)
         # Optional parameter baudrate of connection between rfm9x and SPI (baudrate is equal to bitrate)
         # Default baud rate is 10MHz but that may be too fast
         # If issues arise, decrease to 1MHz
