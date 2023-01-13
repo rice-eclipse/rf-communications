@@ -1,5 +1,14 @@
 import yaml
-from Code.Radio.Radio import Radio
+import sys
+import os.path
+
+full_path = os.path.realpath(__file__)
+projectdir = os.path.dirname(os.path.dirname(full_path))
+radiodir = os.path.join(projectdir, "Radio")
+sys.path.insert(0, radiodir)
+
+from Radio import Radio
+print("Radio.py located")
 
 # Create Radio object
 radio = Radio()
