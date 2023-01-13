@@ -4,7 +4,7 @@ import digitalio
 import adafruit_rfm9x
 from collections.abc import Iterable
 import struct
-# import yaml
+import yaml
 # import time
 
 # Unified class for sending and receiving data
@@ -165,6 +165,8 @@ class Radio:
         # self.transmit_per_second = config_dict["transmit_per_second"]
         self.cs = digitalio.DigitalInOut(getattr(board,config_dict["cs_pin"]))
         self.reset = digitalio.DigitalInOut(getattr(board,config_dict["reset_pin"]))
+        self.rfm9x = adafruit_rfm9x.RFM9x(self.spi, self.cs, self.reset, self.radio_freq_mhz, baudrate=10_000_000)
+
         self.data_types = config_dict["data_types"]
         self.packet_size_bytes = 6
         for val in self.data_types:
