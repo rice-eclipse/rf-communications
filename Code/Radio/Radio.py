@@ -25,7 +25,7 @@ class Radio:
         self.callsign = "CLSIGN"
 
         # Initialize SPI
-        # self.spi = busio.SPI(board.SCK, MOSI=board.MOSI, MISO=board.MISO)
+        self.spi = busio.SPI(board.SCK, MOSI=board.MOSI, MISO=board.MISO)
 
         # Define CS and RST pins connected to the radio
         # self.cs = digitalio.DigitalInOut(board.D5)  # board.ce1
