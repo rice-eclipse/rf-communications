@@ -1,14 +1,14 @@
 import yaml
-import sys
-import os.path
 import time
+import sys
+# import os.path
+#
+# full_path = os.path.realpath(__file__)
+# projectdir = os.path.dirname(os.path.dirname(full_path))
+# radiodir = os.path.join(projectdir, "Radio")
+# sys.path.insert(0, radiodir)
 
-full_path = os.path.realpath(__file__)
-projectdir = os.path.dirname(os.path.dirname(full_path))
-radiodir = os.path.join(projectdir, "Radio")
-sys.path.insert(0, radiodir)
-
-from Radio import Radio  # will be fixed on runtime by the above
+from Code.Radio.Radio import Radio
 print("Radio.py located")
 
 radio = Radio()
