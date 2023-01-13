@@ -15,7 +15,7 @@ test_radio_object = Radio()
 # I'm like very sure this will work fine, but for other scripts we might want to catch errors in loading the file.
 # Although, on second thought, if the file doesn't load correctly, then nothing else will work
 # So if we get errors in the file loading, we had better stop and fix them before moving on!
-with open("testconfig.yaml", "r") as stream:
+with open("testconfig.yaml", "r") as stream:  # move this to Radio constructor
     config_dict = yaml.safe_load(stream)
 test_radio_object.load_config(config_dict)
 

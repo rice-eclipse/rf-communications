@@ -11,11 +11,13 @@ import struct
 # Much from:
 # https://learn.adafruit.com/adafruit-rfm69hcw-and-rfm96-rfm95-rfm98-lora-packet-padio-breakouts/circuitpython-for-rfm9x-lora
 
+# TODO: Make a config constructor, add exceptions for when things go wrong, change config file to make it simpler - {name: type}
+
 
 class Radio:
     def __init__(self):
         # NOTICE: A new Radio will NOT work!! You must load a config!!
-        self.radio_freq_mhz = 433.0
+        self.radio_freq_mhz = 433.0  # move to config
         self.packets_per_transmit = 1
         self.transmit_per_second = 1  # Not sure how useful this will be on the rocket, but it's good for testing
         self.packet_size_bytes = 0
@@ -67,7 +69,7 @@ class Radio:
 
         # 6-Byte FCC License Callsign - required for every packet
         # Callsign is not in data_order because it is required for every packet
-        callsign = bytes(self.callsign, 'ASCII')
+        callsign = bytes(self.callsign, 'utf-8')
 
         data_bytearray = bytearray()
         data_bytearray.extend(callsign)
@@ -176,17 +178,3 @@ class Radio:
             return
 
         print(f"Radio configuration loaded! Now configured for {self.packet_size_bytes}-byte packets!")
-
-#
-# with open("testconfig.yaml", "r") as stream:
-#     config_dict = yaml.safe_load(stream)
-#
-# radio = Radio()
-# radio.load_config(config_dict)
-# tn = time.time_ns()
-# packet = radio.send((tn, 2, 3, 4, 5))
-# print(packet)
-# print(len(packet))
-# received = radio.receive(packet)
-# print(received)
-# print(tn)
