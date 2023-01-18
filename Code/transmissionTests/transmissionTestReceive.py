@@ -41,7 +41,7 @@ while True:
                     packet["bandwidth"],
                     packet["spreading"],
                     packet["tx_power"],
-                    packet["packet_num"],
+                    packet["test_num"],
                     packet["snr"],
                     packet["rssi"]))
 
