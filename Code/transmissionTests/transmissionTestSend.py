@@ -60,7 +60,7 @@ while c_idx < len(test_cases):
             print(f"No acknowledgement received for test {c_idx} {config}")
             attempts += 1
 
-    print(ack_pack)
+    print(f"Packet: {ack_pack}")
 
     if ack_success:
         ack_pack["final_time"] = time.time_ns()

@@ -36,6 +36,7 @@ print(f"Radio now configured for: Bandwidth {config[0]}, Spreading Factor {confi
 c_idx = 0
 while True:
     packet = radio.receive()
+    print(f"Packet: {packet}")
 
     if packet is not None:
         radio.send((packet["send_time"],
