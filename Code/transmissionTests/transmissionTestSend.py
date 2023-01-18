@@ -56,6 +56,7 @@ while c_idx < len(test_cases):
 
         if ack_pack is not None:
             print("Packet is not None")
+            print(ack_pack)
             ack_success = True
         else:
             print(f"No acknowledgement received for test {c_idx} {config}")
