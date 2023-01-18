@@ -55,14 +55,17 @@ while c_idx < len(test_cases):
         ack_pack = radio.receive()
 
         if ack_pack is not None:
+            print("Packet is not None")
             ack_success = True
         else:
             print(f"No acknowledgement received for test {c_idx} {config}")
             attempts += 1
 
+    print(f"Attempts: {attempts}, Success: {ack_success}")
     print(f"Packet: {ack_pack}")
 
     if ack_success:
+        print("Ack Success; recording and moving on to the next test")
         ack_pack["final_time"] = time.time_ns()
         test_record[c_idx] = ack_pack
         c_idx += 1
