@@ -72,7 +72,7 @@ while c_idx < len(test_cases):
         test_record[c_idx] = ack_pack
         c_idx += 1
     else:
-        print(f"Redoing test {c_idx}; no acknowledgement; attempt {test_attempts}")
+        print("Test Failed, Moving On")
         if test_attempts < 2:
             test_attempts += 1
         else:
