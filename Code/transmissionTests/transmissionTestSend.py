@@ -8,6 +8,8 @@ projectdir = os.path.dirname(os.path.dirname(full_path))
 radiodir = os.path.join(projectdir, "Radio")
 sys.path.insert(0, radiodir)
 
+attempts_per_config = 3
+
 from Radio import Radio
 print("Radio.py located")
 
@@ -21,7 +23,7 @@ test_cases = []
 for bandwidth in (62500, 125000, 250000, 500000):
     for spreading_factor in range(7, 13):
         for tx_power in (23, 20, 17):
-            for i in range(10):
+            for i in range(attempts_per_config):
                 test_cases.append((bandwidth, spreading_factor, tx_power))
 
 print("Tests loaded")
@@ -31,7 +33,7 @@ test_attempts = 0
 c_idx = 0
 while c_idx < len(test_cases):
     
-    if c_idx % 10 == 0:
+    if c_idx % attempts_per_config == 0:
         print(f"Tests {100 * (c_idx / len(test_cases))}% completed")
 
     config = test_cases[c_idx]
@@ -71,7 +73,7 @@ while c_idx < len(test_cases):
         c_idx += 1
     else:
         print(f"Redoing test {c_idx}; no acknowledgement; attempt {test_attempts}")
-        if test_attempts < 3:
+        if test_attempts < 2:
             test_attempts += 1
         else:
             c_idx += 1
