@@ -27,10 +27,10 @@ for bandwidth in (62500, 125000, 250000, 500000):
 print("Tests loaded")
 
 test_record = []
-
+test_attempts = 0
 c_idx = 0
 while c_idx < len(test_cases):
-    test_attempts = 0
+    
     if c_idx % 10 == 0:
         print(f"Tests {100 * (c_idx / len(test_cases))}% completed")
 
@@ -70,11 +70,12 @@ while c_idx < len(test_cases):
         test_record[c_idx] = ack_pack
         c_idx += 1
     else:
-        print(f"Redoing test {c_idx}; no acknowledgement")
+        print(f"Redoing test {c_idx}; no acknowledgement; attempt {test_attempts}")
         if test_attempts < 3:
             test_attempts += 1
         else:
             c_idx += 1
+            test_attempts = 0
         
 
 with open('log.yaml', 'w') as file:
