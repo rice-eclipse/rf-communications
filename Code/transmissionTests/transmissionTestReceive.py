@@ -40,7 +40,7 @@ while True:
 
     if packet is not None:
         radio.send((packet["send_time"],
-                    time.time_ns(),
+                    time.time_ns()-packet["send_time"],
                     packet["bandwidth"],
                     packet["spreading"],
                     packet["tx_power"],
