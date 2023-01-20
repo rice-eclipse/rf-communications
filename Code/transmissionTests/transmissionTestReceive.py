@@ -33,21 +33,30 @@ radio.rfm9x.tx_power = config[2]
 
 print(f"Radio now configured for: Bandwidth {config[0]}, Spreading Factor {config[1]}, Tx Power {config[2]}")
 
+failures = 0
 c_idx = 0
 while True:
     packet = radio.receive()
     print(f"Packet: {packet}")
+    if attempts < 3:
+        if packet is not None:
+            radio.send((packet["send_time"],
+                        time.time_ns()-packet["send_time"],
+                        packet["bandwidth"],
+                        packet["spreading"],
+                        packet["tx_power"],
+                        packet["test_num"],
+                        packet["snr"],
+                        packet["rssi"]))
+            c_idx += 1
+            config = test_cases[c_idx]
 
-    if packet is not None:
-        radio.send((packet["send_time"],
-                    time.time_ns()-packet["send_time"],
-                    packet["bandwidth"],
-                    packet["spreading"],
-                    packet["tx_power"],
-                    packet["test_num"],
-                    packet["snr"],
-                    packet["rssi"]))
-
+            radio.rfm9x.signal_bandwidth = config[0]
+            radio.rfm9x.spreading_factor = config[1]
+            radio.rfm9x.tx_power = config[2]
+        else:
+            failures +=1
+    else:
         c_idx += 1
         config = test_cases[c_idx]
 
@@ -55,4 +64,6 @@ while True:
         radio.rfm9x.spreading_factor = config[1]
         radio.rfm9x.tx_power = config[2]
 
-        print(f"Radio now configured for: Bandwidth {config[0]}, Spreading Factor {config[1]}, Tx Power {config[2]}")
+    
+
+    print(f"Radio now configured for: Bandwidth {config[0]}, Spreading Factor {config[1]}, Tx Power {config[2]}")
