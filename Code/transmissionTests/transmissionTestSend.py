@@ -55,8 +55,6 @@ while c_idx < len(test_cases):
         ack_pack = radio.receive()
 
         if ack_pack is not None:
-            print("Packet is not None")
-            print(ack_pack)
             ack_success = True
             break
         else:
