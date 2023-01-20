@@ -63,6 +63,7 @@ while True:
         radio.rfm9x.signal_bandwidth = config[0]
         radio.rfm9x.spreading_factor = config[1]
         radio.rfm9x.tx_power = config[2]
+        failures = 0
 
     
 
