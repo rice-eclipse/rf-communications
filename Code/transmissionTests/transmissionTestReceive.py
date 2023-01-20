@@ -21,7 +21,7 @@ test_cases = []
 for bandwidth in (62500, 125000, 250000, 500000):
     for spreading_factor in range(7, 13):
         for tx_power in (23, 20, 17):
-            for i in range(10):
+            for i in range(3):
                 test_cases.append((bandwidth, spreading_factor, tx_power))
 
 print("Tests loaded")
