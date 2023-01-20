@@ -73,11 +73,8 @@ while c_idx < len(test_cases):
         c_idx += 1
     else:
         print("Test Failed, Moving On")
-        if test_attempts < 2:
-            test_attempts += 1
-        else:
-            c_idx += 1
-            test_attempts = 0
+        c_idx += 1
+
         
 
 with open('log.yaml', 'w') as file:
