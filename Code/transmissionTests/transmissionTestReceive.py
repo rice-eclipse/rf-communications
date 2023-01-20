@@ -38,7 +38,7 @@ c_idx = 0
 while True:
     packet = radio.receive()
     print(f"Packet: {packet}")
-    if attempts < 3:
+    if failures < 3:
         if packet is not None:
             radio.send((packet["send_time"],
                         time.time_ns()-packet["send_time"],
