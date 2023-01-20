@@ -30,7 +30,7 @@ test_record = []
 
 c_idx = 0
 while c_idx < len(test_cases):
-
+    test_attempts = 0
     if c_idx % 10 == 0:
         print(f"Tests {100 * (c_idx / len(test_cases))}% completed")
 
@@ -71,6 +71,11 @@ while c_idx < len(test_cases):
         c_idx += 1
     else:
         print(f"Redoing test {c_idx}; no acknowledgement")
+        if test_attempts < 3:
+            test_attempts += 1
+        else:
+            c_idx += 1
+        
 
 with open('log.yaml', 'w') as file:
     log = yaml.dump(test_record, file)
