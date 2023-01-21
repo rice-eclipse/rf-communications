@@ -3,6 +3,7 @@ import time
 import sys
 import os.path
 
+# Get the file Radio.py into PATH
 full_path = os.path.realpath(__file__)
 projectdir = os.path.dirname(os.path.dirname(full_path))
 radiodir = os.path.join(projectdir, "Radio")
@@ -13,10 +14,9 @@ attempts_per_config = 3
 from Radio import Radio
 print("Radio.py located")
 
-radio = Radio()
 with open("transmissionTestConfig.yaml", "r") as stream:
     config_dict = yaml.safe_load(stream)
-radio.load_config(config_dict)
+radio = Radio(config_dict)
 
 test_cases = []
 # each test case is a 3-tuple (bandwidth, spreading factor, transmission power)

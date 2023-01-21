@@ -11,42 +11,49 @@ import yaml
 # Much from:
 # https://learn.adafruit.com/adafruit-rfm69hcw-and-rfm96-rfm95-rfm98-lora-packet-padio-breakouts/circuitpython-for-rfm9x-lora
 
-# TODO: Make a config constructor, add exceptions for when things go wrong
-
 
 class Radio:
-    def __init__(self):
-        # NOTICE: A new Radio will NOT work!! You must load a config!!
-        self.radio_freq_mhz = 433.0
-        self.packets_per_transmit = 1
-        self.transmit_per_second = 1  # Not sure how useful this will be on the rocket, but it's good for testing
-        self.packet_size_bytes = 0
-        self.data_types = []
-        self.callsign = "CLSIGN"
+    def __init__(self, config_dict):
+        """
+        Constructs a Radio object with a given configuration
 
-        # Initialize SPI
+        Parameters:
+            config_dict: a dictionary loaded from a configuration file with such fields as frequency, callsign, data_types, etc.
+
+        Returns:
+            The newly-constructed Radio object
+        """
+        # NOTICE: Configuration loading moved to __init__
+        # I could have just called load_config, but I've heard it's better form to initialize all variables in __init__
+
+        # Loading Basics
+        self.radio_freq_mhz = config_dict["frequency_mhz"]
+
+        self.callsign = config_dict["callsign"]
+
+        self.packets_per_transmit = config_dict["packets_per_transmit"]
+        self.transmit_per_second = config_dict["transmit_per_second"]
+
+        # Loading Connections and Radio
+        self.cs = digitalio.DigitalInOut(getattr(board, config_dict["cs_pin"]))
+        self.reset = digitalio.DigitalInOut(getattr(board, config_dict["reset_pin"]))
         self.spi = busio.SPI(board.SCK, MOSI=board.MOSI, MISO=board.MISO)
 
-        self.cs = None
-        self.reset = None
-        self.rfm9x = None
-
-        # Define CS and RST pins connected to the radio
-        # self.cs = digitalio.DigitalInOut(board.D5)  # board.ce1
-        # self.reset = digitalio.DigitalInOut(board.D6)  # board.d25
-
-        # Define the onboard LED
-        # self.LED = digitalio.DigitalInOut(board.D13)
-        # self.LED.direction = digitalio.Direction.OUTPUT
-
-        # Create an instance of RFM9x
-        # self.rfm9x = adafruit_rfm9x.RFM9x(self.spi, self.cs, self.reset, self.radio_freq_mhz, baudrate=10_000_000)
+        self.rfm9x = adafruit_rfm9x.RFM9x(self.spi, self.cs, self.reset, self.radio_freq_mhz, baudrate=10_000_000)
         # Optional parameter baudrate of connection between rfm9x and SPI (baudrate is equal to bitrate)
         # Default baud rate is 10MHz but that may be too fast
         # If issues arise, decrease to 1MHz
 
-        # Adjust transmitting power (dB)
-        # self.rfm9x.tx_power = 20
+        # Loading Data Structure
+        self.data_types = config_dict["data_types"]
+        self.packet_size_bytes = 6
+        for val in self.data_types:
+            self.packet_size_bytes += struct.calcsize(list(val.values())[0])
+
+        if self.packet_size_bytes >= 252:
+            raise Exception("Radio packet size too large (must be under 252 bytes)")
+
+        print(f"Radio configuration loaded! Now configured for {self.packet_size_bytes}-byte packets!")
 
     def send(self, data):
         """
@@ -82,7 +89,6 @@ class Radio:
 
         # To send a message, call send()
         self.rfm9x.send(bytes(data_bytearray))
-        # return bytes(data_bytearray)
 
     def send_flight_data(self, acceleration, gyro, magnetic, altitude, gps, temperature):
         """
@@ -99,6 +105,8 @@ class Radio:
         Returns:
             None
         """
+        # TODO: Decide whether this function is actually necessary. Will require communication with Flight Instruments
+
         data = (acceleration, gyro, magnetic, altitude, gps, temperature)
         flat_data = []
         for item in data:
@@ -119,29 +127,40 @@ class Radio:
         Returns:
             Dictionary w/ all keys in the config data_types, along with 'rssi' and 'snr'
         """
-        # packet = self.rfm9x.receive()
         # Optionally change the receive timeout (how long until it gives up) from its default of 0.5 seconds:
         packet = self.rfm9x.receive(timeout=1/self.transmit_per_second)
         # If no packet was received during the timeout then None is returned.
         if packet is None:
             # Packet has not been received
-            # self.LED.value = False
             return None
         else:
             # Received a packet!
-            # self.LED.value = True
 
-            # Cut off callsign; we don't need it (maybe check to make sure it's our packet?)
+            # Check to see if it has the right number of bytes to be ours
+            if len(packet) != self.packet_size_bytes:
+                print(f"Received packet is not the right size! ({len(packet)}, should be {self.packet_size_bytes})")
+                return None
+
+            # Check to see if it's our packet using the callsign
+            callsign = str(packet[:6], 'utf-8')
+            if callsign != self.callsign:
+                print(f"Received packet has incorrect callsign! ({callsign}, should be {self.callsign})")
+                return None
+
             encoded_data = packet[6:]
 
             # Build a list of all the data we've received
             return_dict = {}
             for data_type in self.data_types:
-                bytes_size = struct.calcsize(list(data_type.values())[0])
+                dt = list(data_type.values())[0]  # have to do this funky thing because of how YAML is organized
+                data_name = list(data_type.keys())[0]
+
+                bytes_size = struct.calcsize(dt)
                 this_data = encoded_data[:bytes_size]
                 encoded_data = encoded_data[bytes_size:]
-                unpacked_data = struct.unpack(f">{list(data_type.values())[0]}", this_data)[0]
-                return_dict[list(data_type.keys())[0]] = unpacked_data
+
+                unpacked_data = struct.unpack(f">{dt}", this_data)[0]
+                return_dict[data_name] = unpacked_data
 
             # Also read the RSSI (signal strength) of the last received message, in dB
             return_dict["rssi"] = self.rfm9x.last_rssi
@@ -177,7 +196,6 @@ class Radio:
             self.packet_size_bytes += struct.calcsize(list(val.values())[0])
 
         if self.packet_size_bytes >= 252:
-            print("PACKET SIZE TOO LARGE! DO NOT CONTINUE!")
-            return
+            raise Exception("Radio packet size too large (must be under 252 bytes)")
 
         print(f"Radio configuration loaded! Now configured for {self.packet_size_bytes}-byte packets!")
