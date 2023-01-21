@@ -50,7 +50,7 @@ while c_idx < len(test_cases):
     attempts = 0
     ack_success = False
     ack_pack = None
-    while attempts < 3 and not ack_success:
+    while attempts < 2 and not ack_success:
         send_time = time.time_ns()
         radio.send((send_time, 0, config[0], config[1], config[2], c_idx, 0, 0))
 
