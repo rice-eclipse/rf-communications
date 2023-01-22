@@ -38,7 +38,7 @@ c_idx = 0
 while True:
     packet = radio.receive()
     print(f"Packet: {packet}")
-    if failures < 3:
+    if failures < 2:
         print (f"Failures: {failures}")
         if packet is not None:
             radio.send((packet["send_time"],
@@ -55,6 +55,7 @@ while True:
             radio.rfm9x.signal_bandwidth = config[0]
             radio.rfm9x.spreading_factor = config[1]
             radio.rfm9x.tx_power = config[2]
+            failures = 0
         else:
             failures += 1
     else:
