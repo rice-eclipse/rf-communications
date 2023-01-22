@@ -9,14 +9,14 @@ projectdir = os.path.dirname(os.path.dirname(full_path))
 radiodir = os.path.join(projectdir, "Radio")
 sys.path.insert(0, radiodir)
 
-tests_per_config = 3
-
 from Radio import Radio
 print("Radio.py located")
 
 with open("transmissionTestConfig.yaml", "r") as stream:
     config_dict = yaml.safe_load(stream)
 radio = Radio(config_dict)
+
+tests_per_config = 3
 
 test_cases = []
 # each test case is a 3-tuple (bandwidth, spreading factor, transmission power)
@@ -57,6 +57,7 @@ with open("log.tsv", 'a', buffering=1) as file:
             ack_pack = radio.receive()
 
             if ack_pack is not None:
+                # Set ack_success to True so the code outside the loop knows, and break out immediately
                 ack_success = True
                 break
             else:
@@ -70,6 +71,7 @@ with open("log.tsv", 'a', buffering=1) as file:
             print("Ack Success; recording and moving on to the next test")
             ack_pack["final_time"] = time.time_ns()
             # Update the file immediately so that we keep this data
+            # Potential issue if this takes a long time to do, but I think we'll be ok
             yaml.dump([ack_pack], file)
             # Putting ack_pack into a little list helps keep the different tests separate in the yaml
             file.flush()
