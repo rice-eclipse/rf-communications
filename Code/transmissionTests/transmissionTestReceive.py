@@ -55,7 +55,7 @@ while True:
             radio.rfm9x.spreading_factor = config[1]
             radio.rfm9x.tx_power = config[2]
         else:
-            failures +=1
+            failures += 1
     else:
         c_idx += 1
         config = test_cases[c_idx]
