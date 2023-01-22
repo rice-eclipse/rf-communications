@@ -49,6 +49,7 @@ while True:
                         packet["test_num"],
                         packet["snr"],
                         packet["rssi"]))
+            c_idx = packet["test_num"]
             c_idx += 1
             config = test_cases[c_idx]
 
