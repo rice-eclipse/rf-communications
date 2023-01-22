@@ -47,6 +47,7 @@ while True:
     packet = radio.receive()
     print(f"Packet: {packet}")
     if failures < 3:
+        print (f"Failures: {failures})
         if packet is not None:
             radio.send((packet["send_time"],
                         time.time_ns()-packet["send_time"],
