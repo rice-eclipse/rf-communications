@@ -68,7 +68,7 @@ with open("log.tsv", 'a', buffering=1) as file:
 
         if ack_success:
             print("Ack Success; recording and moving on to the next test")
-            ack_pack["final_time"] = time.time_ns()
+            ack_pack["final_time"] = time.time_ns() - ack_pack["ping_time"]
             # Update the file immediately so that we keep this data
             yaml.dump([ack_pack], file)
             # Putting ack_pack into a little list helps keep the different tests separate in the yaml

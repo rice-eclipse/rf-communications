@@ -14,6 +14,7 @@ with open("log.yaml", 'r') as logfile:
 """
 Variables that would be good to plot:
 ping_time
+final_time
 bandwidth
 spreading
 tx_power
