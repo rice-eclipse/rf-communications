@@ -26,7 +26,7 @@ Variables that would not be good to plot:
 send_time
 test_num
 """
-disp = {"x":"bandwidth", "y":"spreading", "z":"tx_power", "color":"rssi"}
+disp = {"x": "bandwidth", "y": "spreading", "z": "tx_power", "color": "rssi"}
 
 
 fig = plt.figure()
@@ -38,11 +38,12 @@ y = []
 z = []
 col = []
 
+# mThis would probably be better if these were natively numpy arrays
 for point in data:
     x.append(point[disp["x"]])
     y.append(point[disp["y"]])
     z.append(point[disp["z"]])
-    col.append(point[disp["col"]])
+    col.append(point[disp["color"]])
 
 assert len(x) == len(y) == len(z) == len(col)
 
@@ -51,5 +52,6 @@ ax.scatter3D(numpy.array(x), numpy.array(y), numpy.array(z), c=numpy.array(col),
 ax.set_xlabel(disp["x"])
 ax.set_ylabel(disp["y"])
 ax.set_zlabel(disp["z"])
+ax.set_title(f"Color is {disp['color']}")
 
 plt.show()
