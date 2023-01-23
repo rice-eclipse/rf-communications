@@ -1,0 +1,8 @@
+frequency_mhz: 433.0
+cs_pin: CE1
+reset_pin: D25
+packets_per_transmit: 1
+transmit_per_second: 1
+callsign: CLSIGN
+data_types:
+  - index: h
