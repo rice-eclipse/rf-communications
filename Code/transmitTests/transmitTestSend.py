@@ -6,15 +6,15 @@ import os.path
 # Get the file Radio.py into PATH
 full_path = os.path.realpath(__file__)
 projectdir = os.path.dirname(os.path.dirname(full_path))
-radiodir = os.path.join(projectdir, "Radio")
+radiodir = os.path.join(projectdir, "radio")
 sys.path.insert(0, radiodir)
 
 tests_per_config = 3
 
-from Radio import Radio
+from radio import Radio
 print("Radio.py located")
 
-with open("transmissionTestConfig.yaml", "r") as stream:
+with open("transmitTestConfig.yaml", "r") as stream:
     config_dict = yaml.safe_load(stream)
 radio = Radio(config_dict)
 
