@@ -1,0 +1,15 @@
+packets_per_transmit: 1
+transmit_per_second: 5
+callsign: CLSIGN
+data_order:
+  - timestamp
+  - bandwidth
+  - spreading
+  - tx_power
+  - packet_num
+data_types:
+    timestamp: Q
+    bandwidth: i
+    spreading: h
+    tx_power: h
+    packet_num: H
