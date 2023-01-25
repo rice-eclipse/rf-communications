@@ -62,11 +62,13 @@ if "c" in disp.keys():
 
 if "z" in disp.keys():
     if "c" in disp.keys():
-        my_cmap = plt.get_cmap('Reds')
+        r_cmap = plt.get_cmap('Reds')
+        # g_cmap = plt.get_cmap('Blues')
+        # b_cmap = plt.get_cmap('Gr')
         sctt = ax.scatter3D(numpy.log(x) if disp["log"]["x"] else x,
                             numpy.log(y) if disp["log"]["y"] else y,
                             numpy.log(z) if disp["log"]["z"] else z,
-                            c=c, cmap=my_cmap)
+                            c=c, cmap=r_cmap)
         fig.colorbar(sctt, ax=ax, shrink=0.5, aspect=5)
     else:
         ax.scatter3D(numpy.log(x) if disp["log"]["x"] else x,
@@ -74,10 +76,10 @@ if "z" in disp.keys():
                      numpy.log(z) if disp["log"]["y"] else z)
 else:
     if "c" in disp.keys():
-        my_cmap = plt.get_cmap('Reds')
+        r_cmap = plt.get_cmap('Reds')
         sctt = ax.scatter(numpy.log(x) if disp["log"]["x"] else x,
                           numpy.log(y) if disp["log"]["y"] else y,
-                          c=c, cmap=my_cmap)
+                          c=c, cmap=r_cmap)
         fig.colorbar(sctt, ax=ax, shrink=0.5, aspect=5, label=disp["c"])
     else:
         ax.scatter(numpy.log(x) if disp["log"]["x"] else x,
