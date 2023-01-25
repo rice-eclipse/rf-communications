@@ -7,14 +7,13 @@ import yaml
 # https://jakevdp.github.io/PythonDataScienceHandbook/04.12-three-dimensional-plotting.html
 # https://jakevdp.github.io/PythonDataScienceHandbook/04.02-simple-scatter-plots.html
 
-with open("log.yaml", 'r') as logfile:
+with open("testlog.yaml", 'r') as logfile:
     data = yaml.safe_load(logfile)
 
 
 """
 Variables that would be good to plot:
 ping_time
-final_time
 bandwidth
 spreading
 tx_power
@@ -25,34 +24,68 @@ snr
 
 Variables that would not be good to plot:
 send_time
+final_time
 test_num
 """
-disp = {"x": "bandwidth", "y": "spreading", "z": "tx_power", "color": "rssi"}
+disp = {"x": "spreading", "y": "ping_time", "log": {"x": False, "y": False, "z": False}}
+# disp = {"x": "spreading", "y": "bandwidth", "z": "ping_time", "log": {"x": False, "y": False, "z": False}}
 
 
 fig = plt.figure()
-ax = plt.axes(projection='3d')
+ax = plt.axes(projection='3d' if "z" in disp.keys() else None)
 
 
 x = []
 y = []
 z = []
-col = []
+c = []
 
-# mThis would probably be better if these were natively numpy arrays
+# I think it's actually better to build the arrays like this because numpy arrays are immutable
 for point in data:
     x.append(point[disp["x"]])
     y.append(point[disp["y"]])
-    z.append(point[disp["z"]])
-    col.append(point[disp["color"]])
+    if "z" in disp.keys():
+        z.append(point[disp["z"]])
+    if "c" in disp.keys():
+        c.append(point[disp["c"]])
 
-assert len(x) == len(y) == len(z) == len(col)
+x = numpy.array(x)
+y = numpy.array(y)
+assert x.size == y.size
 
-ax.scatter3D(numpy.array(x), numpy.array(y), numpy.array(z), c=numpy.array(col), alpha=1, cmap='Reds')
+if "z" in disp.keys():
+    z = numpy.array(z)
+    assert len(z) == len(x)
+if "c" in disp.keys():
+    c = numpy.array(c)
+    assert len(c) == len(x)
+
+if "z" in disp.keys():
+    if "c" in disp.keys():
+        my_cmap = plt.get_cmap('Reds')
+        sctt = ax.scatter3D(numpy.log(x) if disp["log"]["x"] else x,
+                            numpy.log(y) if disp["log"]["y"] else y,
+                            numpy.log(z) if disp["log"]["z"] else z,
+                            c=c, cmap=my_cmap)
+        fig.colorbar(sctt, ax=ax, shrink=0.5, aspect=5)
+    else:
+        ax.scatter3D(numpy.log(x) if disp["log"]["x"] else x,
+                     numpy.log(y) if disp["log"]["y"] else y,
+                     numpy.log(z) if disp["log"]["y"] else z)
+else:
+    if "c" in disp.keys():
+        my_cmap = plt.get_cmap('Reds')
+        sctt = ax.scatter(numpy.log(x) if disp["log"]["x"] else x,
+                          numpy.log(y) if disp["log"]["y"] else y,
+                          c=c, cmap=my_cmap)
+        fig.colorbar(sctt, ax=ax, shrink=0.5, aspect=5, label=disp["c"])
+    else:
+        ax.scatter(numpy.log(x) if disp["log"]["x"] else x,
+                   numpy.log(y) if disp["log"]["y"] else y)
 
 ax.set_xlabel(disp["x"])
 ax.set_ylabel(disp["y"])
-ax.set_zlabel(disp["z"])
-ax.set_title(f"Color is {disp['color']}")
+if "z" in disp.keys():
+    ax.set_zlabel(disp["z"])
 
 plt.show()
