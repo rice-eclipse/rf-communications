@@ -3,6 +3,9 @@ import time
 import sys
 import os.path
 
+# If git doesn't cooperate:
+# git add .\code\transmitTests\transmitTestSend.py
+
 # Get the file Radio.py into PATH
 full_path = os.path.realpath(__file__)
 projectdir = os.path.dirname(os.path.dirname(full_path))
@@ -21,7 +24,7 @@ radio = Radio(config_dict)
 test_cases = []
 # each test case is a 3-tuple (bandwidth, spreading factor, transmission power)
 for spreading_factor in range(7, 13):
-    for bandwidth in (62500, 125000, 250000, 500000):
+    for bandwidth in (500000, 250000, 125000, 62500):
         for tx_power in (23, 20, 17):
             for i in range(tests_per_config):
                 test_cases.append((bandwidth, spreading_factor, tx_power))
