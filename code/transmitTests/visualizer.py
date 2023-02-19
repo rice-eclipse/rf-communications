@@ -7,7 +7,7 @@ import yaml
 # https://jakevdp.github.io/PythonDataScienceHandbook/04.12-three-dimensional-plotting.html
 # https://jakevdp.github.io/PythonDataScienceHandbook/04.02-simple-scatter-plots.html
 
-with open("testlog.yaml", 'r') as logfile:
+with open("fieldlog.yaml", 'r') as logfile:
     data = yaml.safe_load(logfile)
 
 

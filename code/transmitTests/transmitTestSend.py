@@ -20,8 +20,8 @@ radio = Radio(config_dict)
 
 test_cases = []
 # each test case is a 3-tuple (bandwidth, spreading factor, transmission power)
-for bandwidth in (62500, 125000, 250000, 500000):
-    for spreading_factor in range(7, 13):
+for spreading_factor in range(7, 13):
+    for bandwidth in (62500, 125000, 250000, 500000):
         for tx_power in (23, 20, 17):
             for i in range(tests_per_config):
                 test_cases.append((bandwidth, spreading_factor, tx_power))
@@ -49,9 +49,13 @@ with open("log.yaml", 'a', buffering=1) as file:
         ack_success = False
         ack_pack = None
         while attempts < 2 and not ack_success:
+            # Configure for send
+
             # Send packet
             send_time = time.time_ns()
             radio.send((send_time, 0, config[0], config[1], config[2], c_idx, 0, 0))
+
+            # Configure for receive
 
             # Receive acknowledgement
             ack_pack = radio.receive()

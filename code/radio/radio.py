@@ -39,6 +39,19 @@ class Radio:
         self.reset = digitalio.DigitalInOut(getattr(board, config_dict["reset_pin"]))
         self.spi = busio.SPI(board.SCK, MOSI=board.MOSI, MISO=board.MISO)
 
+        # NARWAL RF Switch
+        self.CTRL1A = digitalio.DigitalInOut(config_dict["ctrl1A_pin"])
+        self.CTRL2A = digitalio.DigitalInOut(config_dict["ctrl2A_pin"])
+        self.CTRL1A.direction = digitalio.Direction.OUTPUT
+        self.CTRL2A.direction = digitalio.Direction.OUTPUT
+
+        self.CTRL1B = digitalio.DigitalInOut(config_dict["ctrl1B_pin"])
+        self.CTRL2B = digitalio.DigitalInOut(config_dict["ctrl2B_pin"])
+        self.CTRL1B.direction = digitalio.Direction.OUTPUT
+        self.CTRL2B.direction = digitalio.Direction.OUTPUT
+
+        self.enable_bypass = config_dict["enable_bypass"]
+
         self.rfm9x = adafruit_rfm9x.RFM9x(self.spi, self.cs, self.reset, self.radio_freq_mhz, baudrate=10_000_000)
         # Optional parameter baudrate of connection between rfm9x and SPI (baudrate is equal to bitrate)
         # Default baud rate is 10MHz but that may be too fast
@@ -87,6 +100,20 @@ class Radio:
         for data_type, val in zip(self.data_types, data):
             data_bytearray.extend(struct.pack(f">{list(data_type.values())[0]}", val))
 
+        # For NARWAL we need to change the RF switches send
+        if self.enable_bypass:
+            self.CTRL1A.value = False
+            self.CTRL1B.value = True
+
+            self.CTRL1B.value = False
+            self.CTRL2B.value = True
+        else:
+            self.CTRL1A.value = True
+            self.CTRL1B.value = False
+
+            self.CTRL1B.value = True
+            self.CTRL2B.value = True
+
         # To send a message, call send()
         self.rfm9x.send(bytes(data_bytearray))
 
@@ -127,6 +154,20 @@ class Radio:
         Returns:
             Dictionary w/ all keys in the config data_types, along with 'rssi' and 'snr'
         """
+        # For NARWAL we need to change the RF switches to receive
+        if self.enable_bypass:
+            self.CTRL1A.value = False
+            self.CTRL1B.value = True
+
+            self.CTRL1B.value = False
+            self.CTRL2B.value = True
+        else:
+            self.CTRL1A.value = True
+            self.CTRL1B.value = True
+
+            self.CTRL1B.value = True
+            self.CTRL2B.value = False
+
         # Optionally change the receive timeout (how long until it gives up) from its default of 0.5 seconds:
         packet = self.rfm9x.receive(timeout=1/self.transmit_per_second)
         # If no packet was received during the timeout then None is returned.
