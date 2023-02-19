@@ -18,8 +18,8 @@ radio = Radio(config_dict)
 
 test_cases = []
 # each test case is a 3-tuple (bandwidth, spreading factor, transmission power)
-for bandwidth in (62500, 125000, 250000, 500000):
-    for spreading_factor in range(7, 13):
+for spreading_factor in range(7, 13):  # Switched bandwidth and spreading here
+    for bandwidth in (62500, 125000, 250000, 500000):
         for tx_power in (23, 20, 17):
             for i in range(3):
                 test_cases.append((bandwidth, spreading_factor, tx_power))
