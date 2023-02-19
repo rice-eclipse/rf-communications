@@ -6,6 +6,7 @@ ctrl2A_pin: D19
 ctrl1B_pin: D13
 ctrl2B_pin: D26
 enable_bypass: False
+enable_amps: True
 packets_per_transmit: 1
 transmit_per_second: 0.125
 callsign: CLSIGN
