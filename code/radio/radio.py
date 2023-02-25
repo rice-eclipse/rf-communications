@@ -42,13 +42,13 @@ class Radio:
         # NARWAL RF Switch
         self.enable_amps = config_dict["enable_amps"]
         if self.enable_amps:
-            self.CTRL1A = digitalio.DigitalInOut(config_dict["ctrl1A_pin"])
-            self.CTRL2A = digitalio.DigitalInOut(config_dict["ctrl2A_pin"])
+            self.CTRL1A = digitalio.DigitalInOut(getattr(board, config_dict["ctrl1A_pin"]))
+            self.CTRL2A = digitalio.DigitalInOut(getattr(board, config_dict["ctrl2A_pin"]))
             self.CTRL1A.direction = digitalio.Direction.OUTPUT
             self.CTRL2A.direction = digitalio.Direction.OUTPUT
 
-            self.CTRL1B = digitalio.DigitalInOut(config_dict["ctrl1B_pin"])
-            self.CTRL2B = digitalio.DigitalInOut(config_dict["ctrl2B_pin"])
+            self.CTRL1B = digitalio.DigitalInOut(getattr(board, config_dict["ctrl1B_pin"]))
+            self.CTRL2B = digitalio.DigitalInOut(getattr(board, config_dict["ctrl2B_pin"]))
             self.CTRL1B.direction = digitalio.Direction.OUTPUT
             self.CTRL2B.direction = digitalio.Direction.OUTPUT
 
