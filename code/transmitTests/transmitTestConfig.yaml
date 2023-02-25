@@ -1,6 +1,12 @@
 frequency_mhz: 433.0
 cs_pin: CE1
 reset_pin: D25
+ctrl1A_pin: D6
+ctrl2A_pin: D19
+ctrl1B_pin: D13
+ctrl2B_pin: D26
+enable_bypass: False
+enable_amps: True
 packets_per_transmit: 1
 transmit_per_second: 0.25
 callsign: CLSIGN
