@@ -47,8 +47,8 @@ while True:
                         packet["spreading"],
                         packet["tx_power"],
                         packet["test_num"],
-                        packet["snr"],
-                        packet["rssi"]))
+                        packet["rssi"],
+                        packet["snr"]))
             c_idx = packet["test_num"]
             c_idx += 1
             config = test_cases[c_idx]
