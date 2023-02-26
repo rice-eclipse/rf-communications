@@ -80,7 +80,7 @@ class Radio:
         Returns:
             None
         """
-        print(f"Time at start of radio.send: {time.time()}")
+        print(f"Time at start of radio.send: {time.time()}")  # Timestamps for debugging
         # Bitrate Budget:
         # https://docs.google.com/spreadsheets/d/1BNU0LOl0tzaBlsRqHiAFNp9Y_h9E01Kwud-uezHMNdA/edit#gid=1938337728
 
