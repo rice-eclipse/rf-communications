@@ -41,6 +41,7 @@ while True:
     if failures < 2:
         print (f"Failures: {failures}")
         if packet is not None:
+            time.sleep(0.05)
             radio.send((packet["send_time"],
                         time.time_ns()-packet["send_time"],
                         packet["bandwidth"],
