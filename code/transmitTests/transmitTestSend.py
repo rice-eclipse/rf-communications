@@ -63,6 +63,8 @@ with open("log.yaml", 'a', buffering=1) as file:
             # Receive acknowledgement
             ack_pack = radio.receive()
 
+            time.sleep(0.05)
+
             if ack_pack is not None:
                 ack_success = True
                 break
