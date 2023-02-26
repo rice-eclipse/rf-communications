@@ -106,15 +106,15 @@ class Radio:
         if self.enable_amps:
             if self.enable_bypass:
                 self.CTRL1A.value = False
-                self.CTRL1B.value = True
+                self.CTRL2A.value = True
 
-                self.CTRL2A.value = False
+                self.CTRL1B.value = False
                 self.CTRL2B.value = True
             else:
                 self.CTRL1A.value = True
-                self.CTRL1B.value = False
+                self.CTRL2A.value = False
 
-                self.CTRL2A.value = True
+                self.CTRL1B.value = True
                 self.CTRL2B.value = True
 
         # To send a message, call send()
@@ -161,15 +161,15 @@ class Radio:
         if self.enable_amps:
             if self.enable_bypass:
                 self.CTRL1A.value = False
-                self.CTRL1B.value = True
+                self.CTRL2A.value = True
 
-                self.CTRL2A.value = False
+                self.CTRL1B.value = False
                 self.CTRL2B.value = True
             else:
                 self.CTRL1A.value = True
-                self.CTRL1B.value = True
-
                 self.CTRL2A.value = True
+
+                self.CTRL1B.value = True
                 self.CTRL2B.value = False
 
         # Optionally change the receive timeout (how long until it gives up) from its default of 0.5 seconds:
