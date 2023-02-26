@@ -37,7 +37,7 @@ with open("log.yaml", 'a', buffering=1) as file:
     while c_idx < len(test_cases):
 
         if c_idx % tests_per_config == 0:
-            print(f"Tests {100 * (c_idx / len(test_cases))}% completed")
+            print(f"Tests {int(100 * (c_idx / len(test_cases)))}% completed")
 
         config = test_cases[c_idx]
 
@@ -57,6 +57,9 @@ with open("log.yaml", 'a', buffering=1) as file:
             # Send packet
             send_time = time.time_ns()
             radio.send((send_time, 0, config[0], config[1], config[2], c_idx, 0, 0))
+
+            # Maybe if we sleep for a bit?
+            time.sleep(0.5)
 
             # Configure for receive
 

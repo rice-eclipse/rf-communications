@@ -5,7 +5,7 @@ import adafruit_rfm9x
 from collections.abc import Iterable
 import struct
 import yaml
-# import time
+import time
 
 # Unified class for sending and receiving data
 # Much from:
@@ -80,7 +80,7 @@ class Radio:
         Returns:
             None
         """
-
+        print(f"Time at start of radio.send: {time.time()}")  # Timestamps for debugging
         # Bitrate Budget:
         # https://docs.google.com/spreadsheets/d/1BNU0LOl0tzaBlsRqHiAFNp9Y_h9E01Kwud-uezHMNdA/edit#gid=1938337728
 
@@ -118,7 +118,9 @@ class Radio:
                 self.CTRL2B.value = True
 
         # To send a message, call send()
+        print(f"Time at rfm9x.send: {time.time()}")
         self.rfm9x.send(bytes(data_bytearray))
+        print(f"Time at end of radio.send: {time.time()}")
 
     def send_flight_data(self, acceleration, gyro, magnetic, altitude, gps, temperature):
         """
@@ -157,6 +159,7 @@ class Radio:
         Returns:
             Dictionary w/ all keys in the config data_types, along with 'rssi' and 'snr'
         """
+        print(f"Time at start of radio.receive: {time.time()}")
         # For NARWAL we need to change the RF switches to receive
         if self.enable_amps:
             if self.enable_bypass:
@@ -173,10 +176,13 @@ class Radio:
                 self.CTRL2B.value = False
 
         # Optionally change the receive timeout (how long until it gives up) from its default of 0.5 seconds:
+        print(f"Time before rfm9x.receive: {time.time()}")
         packet = self.rfm9x.receive(timeout=1/self.transmit_per_second)
+        print(f"Time after rfm9x.receive: {time.time()}")
         # If no packet was received during the timeout then None is returned.
         if packet is None:
             # Packet has not been received
+            print(f"Time at end of radio.receive (failure): {time.time()}")
             return None
         else:
             # Received a packet!
@@ -213,6 +219,7 @@ class Radio:
             # Also read the SNR (Signal-to-Noise Ratio) of the last message
             return_dict["snr"] = self.rfm9x.last_snr
 
+            print(f"Time at end of radio.receive (success): {time.time()}")
             return return_dict
 
     def load_config(self, config_dict):
