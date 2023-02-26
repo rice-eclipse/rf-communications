@@ -58,6 +58,9 @@ with open("log.yaml", 'a', buffering=1) as file:
             send_time = time.time_ns()
             radio.send((send_time, 0, config[0], config[1], config[2], c_idx, 0, 0))
 
+            # Maybe if we sleep for a bit?
+            time.sleep(0.5)
+
             # Configure for receive
 
             # Receive acknowledgement
