@@ -106,15 +106,15 @@ class Radio:
         if self.enable_amps:
             if self.enable_bypass:
                 self.CTRL1A.value = False
-                self.CTRL1B.value = True
+                self.CTRL2A.value = True
 
-                self.CTRL2A.value = False
+                self.CTRL1B.value = False
                 self.CTRL2B.value = True
             else:
                 self.CTRL1A.value = True
-                self.CTRL1B.value = False
+                self.CTRL2A.value = False
 
-                self.CTRL2A.value = True
+                self.CTRL1B.value = True
                 self.CTRL2B.value = True
 
         # To send a message, call send()
@@ -161,15 +161,15 @@ class Radio:
         if self.enable_amps:
             if self.enable_bypass:
                 self.CTRL1A.value = False
-                self.CTRL1B.value = True
+                self.CTRL2A.value = True
 
-                self.CTRL2A.value = False
+                self.CTRL1B.value = False
                 self.CTRL2B.value = True
             else:
                 self.CTRL1A.value = True
-                self.CTRL1B.value = True
-
                 self.CTRL2A.value = True
+
+                self.CTRL1B.value = True
                 self.CTRL2B.value = False
 
         # Optionally change the receive timeout (how long until it gives up) from its default of 0.5 seconds:
@@ -234,6 +234,21 @@ class Radio:
         self.cs = digitalio.DigitalInOut(getattr(board,config_dict["cs_pin"]))
         self.reset = digitalio.DigitalInOut(getattr(board,config_dict["reset_pin"]))
         self.rfm9x = adafruit_rfm9x.RFM9x(self.spi, self.cs, self.reset, self.radio_freq_mhz, baudrate=10_000_000)
+
+        # NARWAL RF Switch
+        self.enable_amps = config_dict["enable_amps"]
+        if self.enable_amps:
+            self.CTRL1A = digitalio.DigitalInOut(getattr(board, config_dict["ctrl1A_pin"]))
+            self.CTRL2A = digitalio.DigitalInOut(getattr(board, config_dict["ctrl2A_pin"]))
+            self.CTRL1A.direction = digitalio.Direction.OUTPUT
+            self.CTRL2A.direction = digitalio.Direction.OUTPUT
+
+            self.CTRL1B = digitalio.DigitalInOut(getattr(board, config_dict["ctrl1B_pin"]))
+            self.CTRL2B = digitalio.DigitalInOut(getattr(board, config_dict["ctrl2B_pin"]))
+            self.CTRL1B.direction = digitalio.Direction.OUTPUT
+            self.CTRL2B.direction = digitalio.Direction.OUTPUT
+
+        self.enable_bypass = config_dict["enable_bypass"]
 
         self.data_types = config_dict["data_types"]
         self.packet_size_bytes = 6
