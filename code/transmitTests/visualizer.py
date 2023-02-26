@@ -27,7 +27,7 @@ send_time
 final_time
 test_num
 """
-disp = {"x": "spreading", "y": "ping_time", "log": {"x": False, "y": False, "z": False}}
+disp = {"x": "spreading", "y": "snr", "log": {"x": False, "y": False, "z": False}}
 # disp = {"x": "spreading", "y": "bandwidth", "z": "ping_time", "log": {"x": False, "y": False, "z": False}}
 
 
