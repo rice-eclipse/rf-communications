@@ -47,7 +47,7 @@ while True:
                         packet["spreading"],
                         packet["tx_power"],
                         packet["test_num"],
-                        packet["rssi"],
+                        packet["rssi"],  # should be fixed now
                         packet["snr"]))
             c_idx = packet["test_num"]
             c_idx += 1
