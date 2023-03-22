@@ -11,8 +11,8 @@ coding_rate:	5		# Error correction strength (5-8)
 baudrate:		10		# Transceiver baudrate in MHz
 
 callsign:		CLSGN	# Ham radio callsign (null = don't send)
-send_packet_n:	true	# Send packet number
-send_time:		true	# Send Unix time at transmit
+send_packet_n:	true	# Send packet number (true/false)
+send_time:		true	# Send Unix time at transmit (true/false)
 magic:			0x69	# Magic checkbyte (null = don't send)
 
 pins:

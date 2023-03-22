@@ -7,11 +7,13 @@ import adafruit_rfm9x
 import struct
 import time
 
+
 class AmpMode(Enum):
 	DISABLED = 'D'
 	BYPASS	 = 'B'
 	TRANSMIT = 'T'
 	RECEIVE  = 'R'
+
 
 class Radio:
 
@@ -19,7 +21,18 @@ class Radio:
 	  'uint8':'B', 'uint16':'H', 'uint32':'I', 'uint64':'Q',
 	  'float32':'f', 'float64':'d', 'bool':'?'}
 
-	def __init__(self, config_filename):
+
+	'''
+	Constructs a Radio object with the given configuration.
+	
+	Parameters:
+		config_filename:	the path to a valid LaunchTest-format radio config file
+		log_filename:		the path to a YAML file to write received data to
+
+	Returns:
+		None
+	'''
+	def __init__(self, config_filename, log_filename):
 
 		print("Radio initializing...")
 
@@ -45,6 +58,8 @@ class Radio:
 		self.pins_swB = self.config['pins']['switch_B']
 		self.packetdef = self.config['packetdef']
 
+		self.log_filename = log_filename
+
 		# Declare transceiver
 		cs = dIO(getattr(board, self.pins_trx['cs']))
 		reset = dIO(getattr(board, self.pins_trx['reset']))
@@ -60,19 +75,8 @@ class Radio:
 		self.trx.tx_power = self.tx_power
 		self.trx.coding_rate = self.coding_rate
 
-		# Declare & initialize RF switches
-		if self.amp_mode != AmpMode.DISABLED:
-			swA_ctrl1 = dIO(getattr(board, self.pins_swA['ctrl1']))
-			swA_ctrl2 = dIO(getattr(board, self.pins_swA['ctrl2']))
-			swB_ctrl1 = dIO(getattr(board, self.pins_swB['ctrl1']))
-			swB_ctrl2 = dIO(getattr(board, self.pins_swB['ctrl2']))
-
-			ctrls = {}
-			ctrls[AmpMode.BYPASS] = [False, True, False, True]
-			ctrls[AmpMode.TRANSMIT] = [True, False, True, True]
-			ctrls[AmpMode.RECEIVE] = [True, True, True, False]
-
-			swA_ctrl1.value, swA_ctrl2.value, swB_ctrl1.value, swB_ctrl2.value = ctrls[self.amp_mode]
+		# Initialize RF switches
+		self.set_amp_mode(AmpMode(self.amp_mode))
 
 		# Calculate packet size
 		self.packet_size = 0
@@ -99,6 +103,48 @@ class Radio:
 		print("Radio initialization complete")
 
 
+	'''
+	Switches the amplifier mode to the given mode.
+
+	Parameters:
+		mode: the AmpMode to switch to. It is not possible to switch from a non-Disabled mode
+			  to the disabled mode
+
+	Returns:
+		None
+	'''
+	def set_amp_mode(self, mode):
+
+		if mode == AmpMode.DISABLED:
+			if self.amp_mode != AmpMode.DISABLED:
+				print("Cannot switch non-disabled amplifier mode to disabled")
+			return
+		
+		self.amp_mode = mode.value
+
+		swA_ctrl1 = dIO(getattr(board, self.pins_swA['ctrl1']))
+		swA_ctrl2 = dIO(getattr(board, self.pins_swA['ctrl2']))
+		swB_ctrl1 = dIO(getattr(board, self.pins_swB['ctrl1']))
+		swB_ctrl2 = dIO(getattr(board, self.pins_swB['ctrl2']))
+
+		ctrls = {}
+		ctrls[AmpMode.BYPASS] = [False, True, False, True]
+		ctrls[AmpMode.TRANSMIT] = [True, False, True, True]
+		ctrls[AmpMode.RECEIVE] = [True, True, True, False]
+
+		swA_ctrl1.value, swA_ctrl2.value, swB_ctrl1.value, swB_ctrl2.value = ctrls[self.amp_mode]
+
+
+	'''
+	Transmits a packet containing the given data.
+	
+	Parameters:
+		data: a dictionary formatted according to the packet definition specified by the config 
+		  file provided on init
+		
+	Returns:
+		None
+	'''
 	def send(self, data):
 		
 		data_bytes = bytearray()
@@ -112,7 +158,8 @@ class Radio:
 
 		for var_name, var_type in self.packetdef:
 			val = data[var_name]
-			data_bytes.extend(struct.pack(f">{val}", Radio.DATA_TYPES[var_type]))
+			packed_val = struct.pack(f">{val}", Radio.DATA_TYPES[var_type])
+			data_bytes.extend(packed_val)
 
 		if self.magic != None:
 			data_bytes.extend(struct.pack(f">{self.magic}", Radio.DATA_TYPES['uint8']))
@@ -126,6 +173,18 @@ class Radio:
 		print("Packet transmitted successfully")
 	
 
+	'''
+	Receives a single packet and returns its interpreted contents.
+	
+	Parameters:
+		None
+
+	Returns:
+		A dictionary with keys adhering to the packet definition specified by the config file
+		provided on init, plus '_rssi', '_snr', and possibly '_callsign', '_packet_n',
+		'_send_time', and/or '_magic' as appropriate, and with values extracted from the received 
+		packet.
+	'''
 	def receive(self):
 
 		packet = self.trx.receive(timeout=self.timeout)
@@ -145,19 +204,65 @@ class Radio:
 			if callsign != self.callsign:
 				print(f"Received packet with callsign {callsign} is invalid for config with callsign {self.callsign}")
 				return None
-			data['callsign'] = callsign
+			data['_callsign'] = callsign
 			packet = packet[len(bytes(self.callsign, 'ascii')):]
+
+		if self.send_packet_n:
+			packet_n_raw = packet[:struct.calcsize(Radio.DATA_TYPES['uint32'])]
+			data['_packet_n'] = struct.unpack(f">{Radio.DATA_TYPES['uint32']}", packet_n_raw)
+			packet = packet[struct.calcsize(Radio.DATA_TYPES['uint32']):]
+
+		if self.send_time:
+			send_time_raw = packet[:struct.calcsize(Radio.DATA_TYPES['uint64'])]
+			data['_send_time'] = struct.unpack(f">{Radio.DATA_TYPES['uint64']}", send_time_raw)
+			packet = packet[struct.calcsize(Radio.DATA_TYPES['uint64']):]
 			
 		if self.magic != None:
 			magic = packet[-struct.calcsize(Radio.DATA_TYPES['uint8']):]
 			if magic != self.magic:
 				print(f"Received packet with magic {magic} is invalid for config with magic {self.magic}")
 				return None
-			data['magic'] = magic
+			data['_magic'] = magic
 			packet = packet[:-struct.calcsize(Radio.DATA_TYPES['uint8'])]
 
 		for var_name, var_type in self.packetdef:
-			pass
+			size = struct.calcsize(Radio.DATA_TYPES[var_type])
+			packed_val = packet[:size]
+			data[var_name] = struct.unpack(f">{Radio.DATA_TYPES[var_type]}", packed_val)
+			packet = packet[size:]
 
+		data['_rssi'] = self.trx.last_rssi
+		data['_snr'] = self.trx.last_snr
+
+		self.packets_received += 1
 		print("Packet received successfully")
 
+		return data
+	
+
+	'''
+	Receives a single packet, writes its contents to the log file provided on init, and returns 
+	the contents.
+	
+	Parameters:
+		None
+
+	Returns:
+		A dictionary with keys adhering to the packet definition specified by the config file
+		provided on init, plus '_rssi', '_snr', and possibly '_callsign', '_packet_n',
+		'_send_time', and/or '_magic' as appropriate, and with values extracted from the received 
+		packet.
+	'''
+	def receive_and_log(self):
+
+		data = self.receive()
+
+		if self.log_filename != None:
+			with open(self.log_filename, 'a', buffering=1) as log_file:
+				yaml.dump([data], log_file)
+				log_file.flush()
+			print("Data successfully written to log file")
+		else:
+			print("No log filename provided on init, cannot write to log file")
+
+		return data
