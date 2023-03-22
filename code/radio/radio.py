@@ -5,7 +5,12 @@ import adafruit_rfm9x
 from collections.abc import Iterable
 import struct
 import yaml
-import time
+import time, calendar
+i2c = board.I2C()
+
+import adafruit_ds3231
+ds3231 = adafruit_ds3231.DS3231(i2c)  # Not really a radio thing, but it's convenient for Radio to keep track of it
+
 
 # Unified class for sending and receiving data
 # Much from:
@@ -67,6 +72,7 @@ class Radio:
 
         if self.packet_size_bytes >= 252:
             raise Exception("Radio packet size too large (must be under 252 bytes)")
+
 
         print(f"Radio configuration loaded! Now configured for {self.packet_size_bytes}-byte packets!")
 
@@ -266,3 +272,27 @@ class Radio:
             raise Exception("Radio packet size too large (must be under 252 bytes)")
 
         print(f"Radio configuration loaded! Now configured for {self.packet_size_bytes}-byte packets!")
+
+    def sync_system_time(self):
+        """
+        Syncs the system time with the RTC time. May take up to a second to run.
+
+        Parameters:
+            None
+
+        Returns:
+            None
+        """
+
+        # Previous time used in RTC syncing
+        previous_RTC_time = ds3231.datetime
+        while True:
+            # Assuming the Pi keeps its clock up-to-date when connected to internet
+            current_RTC_time = ds3231.datetime
+
+            if current_RTC_time.tm_sec - previous_RTC_time.tm_sec == 1:
+                time.clock_settime(time.CLOCK_REALTIME, calendar.timegm(current_RTC_time))
+                # UTC!!
+                break
+
+            previous_RTC_time = ds3231.datetime
