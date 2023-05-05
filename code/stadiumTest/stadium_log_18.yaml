@@ -1,0 +1,24 @@
+- null
+- null
+- _callsign: CLSGN
+  _magic: 105
+  _packet_n: 0
+  _rssi: -78
+  _send_time: 1679523754083343000
+  _snr: -10.0
+  bandwidth: 62.5
+  spreading: 11
+  tx_power: 23
+- null
+- null
+- null
+- _callsign: CLSGN
+  _magic: 105
+  _packet_n: 4
+  _rssi: -79
+  _send_time: 1679523762779507000
+  _snr: -13.75
+  bandwidth: 62.5
+  spreading: 11
+  tx_power: 23
+- null

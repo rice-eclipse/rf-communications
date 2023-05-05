@@ -1,0 +1,242 @@
+- null
+- _callsign: CLSGN
+  _magic: 105
+  _packet_n: 287
+  _rssi: -77
+  _send_time: 1681681731096796033
+  _snr: -17.75
+  bandwidth: 62.5
+  spreading: 10
+  tx_power: 23
+- null
+- _callsign: CLSGN
+  _magic: 105
+  _packet_n: 289
+  _rssi: -77
+  _send_time: 1681681733811553328
+  _snr: -16.0
+  bandwidth: 62.5
+  spreading: 10
+  tx_power: 23
+- _callsign: CLSGN
+  _magic: 105
+  _packet_n: 290
+  _rssi: -78
+  _send_time: 1681681735172414773
+  _snr: -13.0
+  bandwidth: 62.5
+  spreading: 10
+  tx_power: 23
+- _callsign: CLSGN
+  _magic: 105
+  _packet_n: 291
+  _rssi: -76
+  _send_time: 1681681736518346443
+  _snr: -14.5
+  bandwidth: 62.5
+  spreading: 10
+  tx_power: 23
+- null
+- null
+- _callsign: CLSGN
+  _magic: 105
+  _packet_n: 297
+  _rssi: -77
+  _send_time: 1681681744623664253
+  _snr: -13.0
+  bandwidth: 62.5
+  spreading: 10
+  tx_power: 23
+- _callsign: CLSGN
+  _magic: 105
+  _packet_n: 298
+  _rssi: -76
+  _send_time: 1681681745972193015
+  _snr: -12.75
+  bandwidth: 62.5
+  spreading: 10
+  tx_power: 23
+- _callsign: CLSGN
+  _magic: 105
+  _packet_n: 299
+  _rssi: -77
+  _send_time: 1681681747320569455
+  _snr: -13.75
+  bandwidth: 62.5
+  spreading: 10
+  tx_power: 23
+- null
+- _callsign: CLSGN
+  _magic: 105
+  _packet_n: 301
+  _rssi: -76
+  _send_time: 1681681750014900059
+  _snr: -13.75
+  bandwidth: 62.5
+  spreading: 10
+  tx_power: 23
+- _callsign: CLSGN
+  _magic: 105
+  _packet_n: 302
+  _rssi: -76
+  _send_time: 1681681751363184161
+  _snr: -13.5
+  bandwidth: 62.5
+  spreading: 10
+  tx_power: 23
+- _callsign: CLSGN
+  _magic: 105
+  _packet_n: 303
+  _rssi: -75
+  _send_time: 1681681752710555831
+  _snr: -14.0
+  bandwidth: 62.5
+  spreading: 10
+  tx_power: 23
+- null
+- null
+- _callsign: CLSGN
+  _magic: 105
+  _packet_n: 311
+  _rssi: -76
+  _send_time: 1681681763495047523
+  _snr: -9.5
+  bandwidth: 62.5
+  spreading: 10
+  tx_power: 23
+- _callsign: CLSGN
+  _magic: 105
+  _packet_n: 312
+  _rssi: -76
+  _send_time: 1681681764841503024
+  _snr: -11.0
+  bandwidth: 62.5
+  spreading: 10
+  tx_power: 23
+- _callsign: CLSGN
+  _magic: 105
+  _packet_n: 313
+  _rssi: -76
+  _send_time: 1681681766189912860
+  _snr: -11.0
+  bandwidth: 62.5
+  spreading: 10
+  tx_power: 23
+- _callsign: CLSGN
+  _magic: 105
+  _packet_n: 314
+  _rssi: -77
+  _send_time: 1681681767539196024
+  _snr: -10.75
+  bandwidth: 62.5
+  spreading: 10
+  tx_power: 23
+- null
+- null
+- null
+- null
+- null
+- null
+- null
+- null
+- null
+- null
+- null
+- _callsign: CLSGN
+  _magic: 105
+  _packet_n: 338
+  _rssi: -78
+  _send_time: 1681681799960025401
+  _snr: -7.5
+  bandwidth: 62.5
+  spreading: 10
+  tx_power: 23
+- _callsign: CLSGN
+  _magic: 105
+  _packet_n: 339
+  _rssi: -78
+  _send_time: 1681681801307708499
+  _snr: -16.0
+  bandwidth: 62.5
+  spreading: 10
+  tx_power: 23
+- null
+- _callsign: CLSGN
+  _magic: 105
+  _packet_n: 341
+  _rssi: -78
+  _send_time: 1681681804003369997
+  _snr: -11.0
+  bandwidth: 62.5
+  spreading: 10
+  tx_power: 23
+- _callsign: CLSGN
+  _magic: 105
+  _packet_n: 342
+  _rssi: -79
+  _send_time: 1681681805352119391
+  _snr: -17.5
+  bandwidth: 62.5
+  spreading: 10
+  tx_power: 23
+- _callsign: CLSGN
+  _magic: 105
+  _packet_n: 343
+  _rssi: -78
+  _send_time: 1681681806699929886
+  _snr: -16.25
+  bandwidth: 62.5
+  spreading: 10
+  tx_power: 23
+- null
+- null
+- null
+- _callsign: CLSGN
+  _magic: 105
+  _packet_n: 349
+  _rssi: -83
+  _send_time: 1681681814790579616
+  _snr: -14.0
+  bandwidth: 62.5
+  spreading: 10
+  tx_power: 23
+- _callsign: CLSGN
+  _magic: 105
+  _packet_n: 350
+  _rssi: -83
+  _send_time: 1681681816137199675
+  _snr: -13.5
+  bandwidth: 62.5
+  spreading: 10
+  tx_power: 23
+- null
+- null
+- null
+- null
+- _callsign: CLSGN
+  _magic: 105
+  _packet_n: 361
+  _rssi: -77
+  _send_time: 1681681830977848078
+  _snr: -15.0
+  bandwidth: 62.5
+  spreading: 10
+  tx_power: 23
+- _callsign: CLSGN
+  _magic: 105
+  _packet_n: 362
+  _rssi: -78
+  _send_time: 1681681832335444738
+  _snr: -14.75
+  bandwidth: 62.5
+  spreading: 10
+  tx_power: 23
+- _callsign: CLSGN
+  _magic: 105
+  _packet_n: 363
+  _rssi: -76
+  _send_time: 1681681833692614440
+  _snr: -14.75
+  bandwidth: 62.5
+  spreading: 10
+  tx_power: 23
