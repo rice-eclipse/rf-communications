@@ -106,6 +106,7 @@ class Radio:
         data_bytearray.extend(callsign)
 
         for data_type, val in zip(self.data_types, data):
+            print(data_type, val)
             data_bytearray.extend(struct.pack(f">{list(data_type.values())[0]}", val))
 
         # For NARWAL we need to change the RF switches send
@@ -117,11 +118,11 @@ class Radio:
                 self.CTRL1B.value = False
                 self.CTRL2B.value = True
             else:
-                self.CTRL1A.value = True
-                self.CTRL2A.value = False
+                self.CTRL1A.value = False#True
+                self.CTRL2A.value = True#False
 
-                self.CTRL1B.value = True
-                self.CTRL2B.value = True
+                self.CTRL1B.value = False#True
+                self.CTRL2B.value = True#True
 
         # To send a message, call send()
         print(f"Time at rfm9x.send: {time.time()}")
