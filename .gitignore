@@ -8,3 +8,5 @@ temp/
 fp-info-cache
 *.bak
 *.keep
+*.old
+old.*
