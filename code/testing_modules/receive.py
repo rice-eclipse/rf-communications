@@ -7,7 +7,7 @@ bandwidth = float(input("Enter bandwidth (500, 250, 125, 62.5): "))
 spreading = int(input("Enter spreading factor (7-12): "))
 log_num = input("Enter log file number: ")
 
-trx = eradio.Radio("radio_config.yaml", f"radio_log_{log_num}.yaml")
+trx = eradio.Radio("radio_config.yaml", f"logs/radio_log_{log_num}.yaml")
 trx.set_amp_mode(eradio.AmpMode(mode))
 trx.trx.signal_bandwidth = bandwidth * 10**3
 trx.trx.spreading_factor = spreading
