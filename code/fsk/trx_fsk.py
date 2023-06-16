@@ -101,6 +101,8 @@ _REG_AGC_THRESH_3 = const(0x64)
 _REG_PLL = const(0x70)
 
 # Other internal constants:
+_PA_DAC_DISABLE = const(0x04)
+_PA_DAC_ENABLE = const(0x07)
 _FX_OSC = 32e6 # Crystal oscillator frequency
 _FSTEP = _FX_OSC / 524288 # Frequency synthesizer step (524288 is 2^19)
 _RH_BROADCAST_ADDRESS = const(0xFF) # Broadcast address
@@ -394,3 +396,101 @@ class RFM9X_FSK:
         self._write_u8(_REG_FRF_MSB, msb)
         self._write_u8(_REG_FRF_MID, mid)
         self._write_u8(_REG_FRF_LSB, lsb)
+
+    @property
+    def tx_power(self) -> int:
+        """The transmit power in dBm."""
+        if self.high_power and self.pa_select:
+            return self.output_power + 5
+        elif self.high_power:
+            return self.output_power + 2
+        else:
+            return self.output_power
+    
+    @tx_power.setter
+    def tx_power(self, val: int) -> None:
+        val = int(val)
+        if self.high_power:
+            if val < 2 or val > 20:
+                raise RuntimeError("tx_power must be between 2 and 20")
+            if val > 17:
+                self.pa_dac = _PA_DAC_ENABLE
+                val -= 3
+            else:
+                self.pa_dac = _PA_DAC_DISABLE
+            self.pa_select = True
+            self.output_power = (val - 2) & 0x0F
+        else:
+            if val < 0 or val > 15:
+                raise RuntimeError("tx_power must be between 0 and 15")
+            self.pa_select = False
+            self.max_power = 0b111 # Allow max power output.
+            self.output_power = val & 0x0F
+
+    @property
+    def rssi(self) -> float:
+        """The received strength indicator (in dBm) of the last received message."""
+        return self._read_u8(_REG_RSSI_VALUE) / -2.0
+    
+    @property
+    def bitrate(self) -> float:
+        msb = self._read_u8(_REG_BITRATE_MSB)
+        lsb = self._read_u8(_REG_BITRATE_LSB)
+        return _FX_OSC / ((msb << 8) | lsb)
+    
+    @bitrate.setter
+    def bitrate(self, val: float) -> None:
+        if val < _FX_OSC / 65535 or val > 32e6:
+            raise RuntimeError(f"bitrate must be between {round(_FX_OSC / 65535, 1)} and {32e6}")
+        bitrate = int((_FX_OSC / val) + 0.5) & 0xFFFF
+        self._write_u8(_REG_BITRATE_MSB, bitrate >> 8)
+        self._write_u8(_REG_BITRATE_LSB, bitrate & 0xFF)
+
+    @property
+    def frequency_deviation(self) -> float:
+        msb = self._read_u8(_REG_FDEV_MSB)
+        lsb = self._read_u8(_REG_FDEV_LSB)
+        return _FSTEP * ((msb << 8) | lsb)
+    
+    @frequency_deviation.setter
+    def frequency_deviation(self, val: float) -> None:
+        if val <= 0 or val > _FSTEP * 16383:
+            raise RuntimeError(f"frequency deviation must be between 0 and 16383")
+        fdev = int((val / _FSTEP) + 0.5) & 0x3FFF
+        self._write_u8(_REG_FDEV_MSB, fdev >> 8)
+        self._write_u8(_REG_FDEV_LSB, fdev & 0xFF)
+
+    def packet_sent(self) -> bool:
+        return (self._read_u8(_REG_IRQ_FLAGS_2) & 0x8) >> 3
+    
+    def payload_ready(self) -> bool:
+        return (self._read_u8(_REG_IRQ_FLAGS_2) & 0x4) >> 2
+    
+    def send(
+        self,
+        data: ReadableBuffer,
+        *,
+        keep_listening: bool = False,
+        destination: Optional[int] = None,
+        node: Optional[int] = None,
+        identifier: Optional[int] = None,
+        flags: Optional[int] = None
+    ) -> bool:
+        if len(data) <= 0 or len(data) > 62:
+            raise RuntimeError("payload length must be between 1 and 62 bytes")
+        self.idle()
+        payload = bytearray(2)
+        payload[0] = 1 + len(data)
+        if destination is None:
+            payload[1] = self.destination
+        else:
+            payload[1] = destination
+        payload = payload + data
+        self._write_from(_REG_FIFO, payload)
+        self.transmit()
+        timed_out = check_timeout(self.packet_sent, self.transmit_timeout)
+        if keep_listening:
+            self.listen()
+        else:
+            self.idle()
+        return not timed_out
