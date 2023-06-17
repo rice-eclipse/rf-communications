@@ -7,7 +7,7 @@ import board
 import struct
 import time
 
-from trx_fsk import RFM9x_FSK as TRX
+from transceiver_fsk import RFM9x_FSK as TRX
 
 
 class AmpMode(Enum):
