@@ -472,9 +472,6 @@ class RFM9X_FSK:
         *,
         keep_listening: bool = False,
         destination: Optional[int] = None,
-        node: Optional[int] = None,
-        identifier: Optional[int] = None,
-        flags: Optional[int] = None
     ) -> bool:
         if len(data) <= 0 or len(data) > 62:
             raise RuntimeError("payload length must be between 1 and 62 bytes")
@@ -494,3 +491,40 @@ class RFM9X_FSK:
         else:
             self.idle()
         return not timed_out
+
+    def receive(
+        self,
+        *,
+        keep_listening: bool = True,
+        timeout: Optional[float] = None,
+        with_header: bool = False,
+        accept_broadcasts: bool = False
+    ) -> int:
+        timed_out = False
+        if timeout is None:
+            timeout = self.receive_timeout
+        if timeout is not None:
+            self.listen()
+            timed_out = check_timeout(self.payload_ready, timeout)
+        packet = None
+        self.last_rssi = self.rssi
+        self.idle()
+        if not timed_out:
+            fifo_length = self._read_u8(_REG_FIFO)
+            if fifo_length > 0:
+                packet = bytearray(fifo_length)
+                self._read_into(_REG_FIFO, packet, fifo_length)
+            if fifo_length < 2:
+                packet = None
+            else:
+                receivable_packet = packet[0] == self.node or self.node == _RH_BROADCAST_ADDRESS
+                receivable_broadcast = packet[0] == _RH_BROADCAST_ADDRESS and accept_broadcasts
+                if not receivable_packet and not receivable_broadcast:
+                    packet = None
+                if not with_header and packet is not None:
+                    packet = packet[1:]
+        if keep_listening:
+            self.listen()
+        else:
+            self.idle()
+        return packet
