@@ -469,7 +469,7 @@ class RFM9x:
         self._write_u8(_RH_RF95_REG_21_PREAMBLE_LSB, val & 0xFF)
 
     @property
-    def frequency_mhz(self) -> Literal[433.0, 915.0]:
+    def frequency_mhz(self) -> float:
         """The frequency of the radio in Megahertz. Only the allowed values for
         your radio must be specified (i.e. 433 vs. 915 mhz)!
         """
@@ -481,7 +481,7 @@ class RFM9x:
         return frequency
 
     @frequency_mhz.setter
-    def frequency_mhz(self, val: Literal[433.0, 915.0]) -> None:
+    def frequency_mhz(self, val: float) -> None:
         if val < 240 or val > 960:
             raise RuntimeError("frequency_mhz must be between 240 and 960")
         # Calculate FRF register 24-bit value.
