@@ -181,7 +181,7 @@ class RFM9X_FSK:
     long_range_mode = _RegisterBits(_REG_OP_MODE, offset=7, bits=1)
 
     output_power = _RegisterBits(_REG_PA_CONFIG, bits=4)
-    max_power = _RegisterBits(_REG_PA_CONFIG, offet=4, bits=3)
+    max_power = _RegisterBits(_REG_PA_CONFIG, offset=4, bits=3)
     pa_select = _RegisterBits(_REG_PA_CONFIG, offset=7, bits=1)
 
     pa_ramp = _RegisterBits(_REG_PA_RAMP, bits=4)
@@ -228,10 +228,10 @@ class RFM9X_FSK:
         destination: int = _RH_BROADCAST_ADDRESS
     ) -> None:
         
+        self._device = spidev.SPIDevice(spi, cs, baudrate=baudrate, polarity=0, phase=0)
+
         self.high_power = high_power
         self.tx_power = 13
-
-        self._device = spidev.SPIDevice(spi, cs, baudrate=baudrate, polarity=0, phase=0)
         
         self._reset = reset
         self._reset.switch_to_output(value=True)
@@ -239,6 +239,7 @@ class RFM9X_FSK:
 
         version = self._read_u8(_REG_VERSION)
         if version != 18:
+            print(version)
             raise RuntimeError("Failed to find RFM9X with expected version!")
         
         self.sleep()

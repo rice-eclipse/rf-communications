@@ -6,8 +6,9 @@ from digitalio import DigitalInOut as DIO
 import board
 import struct
 import time
+import os
 
-from transceiver_fsk import RFM9x_FSK as TRX
+from transceiver_fsk import RFM9X_FSK as TRX
 
 
 class AmpMode(Enum):
@@ -46,7 +47,7 @@ class Radio_FSK:
 		self.fdev = self.config['fdev']
 		self.bitrate = self.config['bitrate']
 		self.tx_power = self.config['tx_power']
-		self.amp_mode = self.config['amp_mode']
+		self.amp_mode = AmpMode(self.config['amp_mode'])
 		self.timeout = self.config['timeout']
 		self.packet_delay = self.config['packet_delay']
 		self.self_address = self.config['self_address']
@@ -66,9 +67,9 @@ class Radio_FSK:
 		# Declare transceiver
 		cs = DIO(getattr(board, self.pins_trx['cs']))
 		reset = DIO(getattr(board, self.pins_trx['reset']))
-		sck = DIO(getattr(board, self.pins_trx['sck']))
-		mosi = DIO(getattr(board, self.pins_trx['mosi']))
-		miso = DIO(getattr(board, self.pins_trx['miso']))
+		sck = getattr(board, self.pins_trx['sck'])
+		mosi = getattr(board, self.pins_trx['mosi'])
+		miso = getattr(board, self.pins_trx['miso'])
 		spi = busio.SPI(clock=sck, MOSI=mosi, MISO=miso)
 
 		# Initialize transceiver
@@ -158,7 +159,7 @@ class Radio_FSK:
 	'''
 	def send(self, data):
 
-		data_bytes = bytearray
+		data_bytes = bytearray()
 
 		if self.send_pkt_num:
 			data_bytes.extend(struct.pack(f">{Radio_FSK.DATA_TYPES['uint32']}", self.packets_sent))
@@ -246,13 +247,16 @@ class Radio_FSK:
 
 	def send_and_log(self, data):
 
-		data['_source'] = 'transmitted'
+		if data is not None:
+			data['_source'] = 'transmitted'
 		
 		path = ""
 
 		if self.log_name != None:
 			if self.log_dir != None:
 				path += f"{self.log_dir}/"
+				if not os.path.exists(self.log_dir):
+					os.makedirs(self.log_dir)
 			path += self.log_name
 			
 			with open(path, 'a', buffering=1) as log_file:
@@ -265,20 +269,24 @@ class Radio_FSK:
 		elif self.verbose:
 			print("Cannot log with non-logging config")
 
-		data.pop('_source')
+		if data is not None:
+			data.pop('_source')
 		self.send(data)
 
 		
 	def receive_and_log(self):
 
 		data = self.receive()
-		data['_source'] = 'received'
+		if data is not None:
+			data['_source'] = 'received'
 
 		path = ""
 
 		if self.log_name != None:
 			if self.log_dir != None:
 				path += f"{self.log_dir}/"
+				if not os.path.exists(self.log_dir):
+					os.makedirs(self.log_dir)
 			path += self.log_name
 			
 			with open(path, 'a', buffering=1) as log_file:
@@ -291,5 +299,6 @@ class Radio_FSK:
 		elif self.verbose:
 			print("Cannot log with non-logging config")
 
-		data.pop('_source')
+		if data is not None:
+			data.pop('_source')
 		return data

@@ -3,7 +3,7 @@
 # Core Radio Parameters
 frequency:    433.0     # Center frequency in MHz
 fdev:         5.0       # Frequency deviation in kHz
-bitrate:      1.2       # Bitrate in kbps
+bitrate:      1200      # Bitrate in bits per second
 tx_power:     20        # Transmit power in dBm
 
 # Other Radio Parameters

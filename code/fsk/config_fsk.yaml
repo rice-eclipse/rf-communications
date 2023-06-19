@@ -3,7 +3,7 @@
 # Core Radio Parameters
 frequency:    0.0       # Center frequency in MHz
 fdev:         0.0       # Frequency deviation in kHz
-bitrate:      0.0       # Bitrate in kbps
+bitrate:      0         # Bitrate in bits per second
 tx_power:     0         # Transmit power in dBm
 
 # Other Radio Parameters
@@ -17,7 +17,7 @@ dest_address: 0         # Destination device's node address (0-255, 255=send to 
 accept_broad: false     # Whether we accept broadcast packets (packets sent to all)
 
 # Logging
-verbose:      true      # Whether we print verbose output to the terminal
+verbose:      false      # Whether we print verbose output to the terminal
 log_name:     log       # Log file naming pattern (null = no logging)
 log_dir:      logs      # Directory to store logs (null = current dir)
 
