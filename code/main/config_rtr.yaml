@@ -1,0 +1,57 @@
+### Radio configuration file for use on RTR Neutro II, with Narwal. ###
+
+# Core Radio Parameters
+frequency:    433.0     # Center frequency in MHz
+fdev:         5.0       # Frequency deviation in kHz
+bitrate:      1.2       # Bitrate in kbps
+tx_power:     20        # Transmit power in dBm
+
+# Other Radio Parameters
+amp_mode:     D         # D=disabled, B=bypass, T=transmit, R=receive
+timeout:      1.0       # Receive timeout in seconds
+packet_delay: 0.05      # Transmit interval in seconds
+
+# Addresses
+self_address: 222       # Current device's node address (0-255)
+dest_address: 69        # Destination device's node address (0-255)
+accept_broad: false     # Whether we accept broadcast packets
+
+# Logging
+verbose:      true      # Whether we print verbose output to the terminal
+log_name:     log_rtr0  # Log file naming pattern (null = no logging)
+log_dir:      logs_rtr  # Directory to store logs (null = current dir)
+
+# Raspberry Pi Pin Usage
+pins:
+  transceiver:
+    sck:      SCK
+    mosi:     MOSI
+    miso:     MISO
+    cs:       CE1
+    reset:    D25
+  switch_A:
+    ctrl1:    D6
+    ctrl2:    D19
+  switch_B:
+    ctrl1:    D13
+    ctrl2:    D26
+
+# Special Packet Contents
+send_pkt_num: true      # Whether we send the packet number
+send_time:    true     # Whether we send the current time
+call_sign:    KJ5AXH    # Ham radio call sign (null = unlicensed)
+
+# Packet Contents
+packet_def:
+  - pressure: float32
+  - temperature: float32
+  - altitude: float32
+  - latitude: float64
+  - longitude: float64
+  - altitude_gps: float32
+  - fix_quality: uint8
+  - satellites: uint8
+
+# Supported data types:
+# int8, int16, int32, int64, uint8, uint16, uint32, uint64,
+# float32, float64, bool
