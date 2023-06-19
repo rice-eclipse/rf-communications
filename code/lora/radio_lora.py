@@ -7,7 +7,7 @@ import board
 import struct
 import time
 
-from transceiver_fsk import RFM9x_FSK as TRX
+from transceiver_lora import RFM9x_LoRa as TRX
 
 
 class AmpMode(Enum):
@@ -17,7 +17,7 @@ class AmpMode(Enum):
 	RECEIVE  = 'R'
 
 
-class Radio:
+class Radio_LoRa:
 
 	DATA_TYPES = {'int8':'b', 'int16':'h', 'int32':'i', 'int64':'q',
 	  'uint8':'B', 'uint16':'H', 'uint32':'I', 'uint64':'Q',
@@ -86,15 +86,15 @@ class Radio:
 		if self.callsign != None:
 			self.packet_size += len(bytes(self.callsign, 'ascii'))
 		if self.send_packet_n:
-			self.packet_size += struct.calcsize(Radio.DATA_TYPES['uint32'])
+			self.packet_size += struct.calcsize(Radio_LoRa.DATA_TYPES['uint32'])
 		if self.send_time:
-			self.packet_size += struct.calcsize(Radio.DATA_TYPES['uint64'])
+			self.packet_size += struct.calcsize(Radio_LoRa.DATA_TYPES['uint64'])
 		if self.magic != None:
-			self.packet_size += struct.calcsize(Radio.DATA_TYPES['uint8'])
+			self.packet_size += struct.calcsize(Radio_LoRa.DATA_TYPES['uint8'])
 
 		for vardef in self.packetdef:
 			var_type = list(vardef.values())[0]
-			self.packet_size += struct.calcsize(Radio.DATA_TYPES[var_type])
+			self.packet_size += struct.calcsize(Radio_LoRa.DATA_TYPES[var_type])
 
 		if self.packet_size >= 252:
 			raise Exception(f"Packet size too large: {self.packet_size} > 252 bytes")
@@ -160,19 +160,19 @@ class Radio:
 		if self.callsign != None:
 			data_bytes.extend(bytes(self.callsign, 'ascii'))
 		if self.send_packet_n:
-			data_bytes.extend(struct.pack(f">{Radio.DATA_TYPES['uint32']}", self.packets_sent))
+			data_bytes.extend(struct.pack(f">{Radio_LoRa.DATA_TYPES['uint32']}", self.packets_sent))
 		if self.send_time:
-			data_bytes.extend(struct.pack(f">{Radio.DATA_TYPES['uint64']}", time.time_ns()))
+			data_bytes.extend(struct.pack(f">{Radio_LoRa.DATA_TYPES['uint64']}", time.time_ns()))
 
 		for vardef in self.packetdef:
 			var_name = list(vardef.keys())[0]
 			var_type = list(vardef.values())[0]
 			val = data[var_name]
-			packed_val = struct.pack(f">{Radio.DATA_TYPES[var_type]}", val)
+			packed_val = struct.pack(f">{Radio_LoRa.DATA_TYPES[var_type]}", val)
 			data_bytes.extend(packed_val)
 
 		if self.magic != None:
-			data_bytes.extend(struct.pack(f">{Radio.DATA_TYPES['uint8']}", self.magic))
+			data_bytes.extend(struct.pack(f">{Radio_LoRa.DATA_TYPES['uint8']}", self.magic))
 
 		if len(data_bytes) != self.packet_size:
 			print(f"Packet of size {len(data_bytes)} is invalid for config with size {self.packet_size}")
@@ -218,30 +218,30 @@ class Radio:
 			packet = packet[len(bytes(self.callsign, 'ascii')):]
 
 		if self.send_packet_n:
-			packet_n_raw = packet[:struct.calcsize(Radio.DATA_TYPES['uint32'])]
-			data['_packet_n'] = struct.unpack(f">{Radio.DATA_TYPES['uint32']}", packet_n_raw)[0]
-			packet = packet[struct.calcsize(Radio.DATA_TYPES['uint32']):]
+			packet_n_raw = packet[:struct.calcsize(Radio_LoRa.DATA_TYPES['uint32'])]
+			data['_packet_n'] = struct.unpack(f">{Radio_LoRa.DATA_TYPES['uint32']}", packet_n_raw)[0]
+			packet = packet[struct.calcsize(Radio_LoRa.DATA_TYPES['uint32']):]
 
 		if self.send_time:
-			send_time_raw = packet[:struct.calcsize(Radio.DATA_TYPES['uint64'])]
-			data['_send_time'] = struct.unpack(f">{Radio.DATA_TYPES['uint64']}", send_time_raw)[0]
-			packet = packet[struct.calcsize(Radio.DATA_TYPES['uint64']):]
+			send_time_raw = packet[:struct.calcsize(Radio_LoRa.DATA_TYPES['uint64'])]
+			data['_send_time'] = struct.unpack(f">{Radio_LoRa.DATA_TYPES['uint64']}", send_time_raw)[0]
+			packet = packet[struct.calcsize(Radio_LoRa.DATA_TYPES['uint64']):]
 			
 		if self.magic != None:
-			magic_raw = packet[-struct.calcsize(Radio.DATA_TYPES['uint8']):]
-			magic = struct.unpack(f">{Radio.DATA_TYPES['uint8']}", magic_raw)[0]
+			magic_raw = packet[-struct.calcsize(Radio_LoRa.DATA_TYPES['uint8']):]
+			magic = struct.unpack(f">{Radio_LoRa.DATA_TYPES['uint8']}", magic_raw)[0]
 			if magic != self.magic:
 				print(f"Received packet with magic {magic} is invalid for config with magic {self.magic}")
 				return None
 			data['_magic'] = magic
-			packet = packet[:-struct.calcsize(Radio.DATA_TYPES['uint8'])]
+			packet = packet[:-struct.calcsize(Radio_LoRa.DATA_TYPES['uint8'])]
 
 		for vardef in self.packetdef:
 			var_name = list(vardef.keys())[0]
 			var_type = list(vardef.values())[0]
-			size = struct.calcsize(Radio.DATA_TYPES[var_type])
+			size = struct.calcsize(Radio_LoRa.DATA_TYPES[var_type])
 			packed_val = packet[:size]
-			data[var_name] = struct.unpack(f">{Radio.DATA_TYPES[var_type]}", packed_val)[0]
+			data[var_name] = struct.unpack(f">{Radio_LoRa.DATA_TYPES[var_type]}", packed_val)[0]
 			packet = packet[size:]
 
 		data['_rssi'] = self.trx.last_rssi

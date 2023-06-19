@@ -1,0 +1,46 @@
+### Radio configuration file for FSK transmissions. ###
+
+# Core Radio Parameters
+frequency:    433.0
+fdev:         5
+bitrate:      1.2
+tx_power:     20
+
+# Other Radio Parameters
+amp_mode:     D
+timeout:      1
+packet_delay: 5
+
+# Addresses
+self_address: 69
+dest_address: 222
+accept_broad: false
+
+# Logging
+verbose:      true
+log_name:     log
+log_dir:      logs
+
+# Raspberry Pi Pin Usage
+pins:
+  transceiver:
+    sck:      SCK
+    mosi:     MOSI
+    miso:     MISO
+    cs:       CE1
+    reset:    D25
+  switch_A:
+    ctrl1:    D6
+    ctrl2:    D19
+  switch_B:
+    ctrl1:    D13
+    ctrl2:    D26
+
+# Special Packet Contents
+send_pkt_num: true
+send_time:    false
+call_sign:    KJ5AXH
+
+# Packet Contents
+packet_def:
+  - 

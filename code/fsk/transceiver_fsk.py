@@ -224,8 +224,8 @@ class RFM9X_FSK:
         preamble_length: int = 8,
         high_power: bool = True,
         baudrate: int = int(5e6),
-        node: int = const(0xFF),
-        destination: int = const(0xFF)
+        node: int = _RH_BROADCAST_ADDRESS,
+        destination: int = _RH_BROADCAST_ADDRESS
     ) -> None:
         
         self.high_power = high_power
