@@ -1,4 +1,11 @@
 import time
+import sys
+import os.path
+
+full_path = os.path.realpath(__file__)
+projectdir = os.path.dirname(os.path.dirname(full_path))
+importdir = os.path.join(projectdir, "fsk")
+sys.path.insert(0, importdir)
 
 import radio_fsk
 
@@ -6,18 +13,18 @@ CONFIG_FILENAME = "config_rtr.yaml"
 
 trx = radio_fsk.Radio_FSK(CONFIG_FILENAME)
 
-# while True:
-#     packet = {}
-#     packet['command'] = 0
-#     packet['pressure'] = 1
-#     packet['temperature'] = 2
-#     packet['altitude'] = 4
-#     packet['latitude'] = 7.8
-#     packet['longitude'] = 11.12
-#     packet['altitude_gps'] = 16.171819
-#     packet['fix_quality'] = 3
-#     packet['satellites'] = 120
-#     trx.send(packet)
+while True:
+    packet = {}
+    packet['command'] = 0
+    packet['pressure'] = 1
+    packet['temperature'] = 2
+    packet['altitude'] = 4
+    packet['latitude'] = 7.8
+    packet['longitude'] = 11.12
+    packet['altitude_gps'] = 16.171819
+    packet['fix_quality'] = 3
+    packet['satellites'] = 120
+    trx.send(packet)
 
 def main():
     while True:

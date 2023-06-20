@@ -239,7 +239,6 @@ class RFM9X_FSK:
 
         version = self._read_u8(_REG_VERSION)
         if version != 18:
-            print(version)
             raise RuntimeError("Failed to find RFM9X with expected version!")
         
         self.sleep()
