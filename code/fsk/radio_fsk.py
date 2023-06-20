@@ -18,6 +18,15 @@ class AmpMode(Enum):
 	RECEIVE  = 'R'
 
 
+class Command(Enum):
+	NULL = 0
+	SHUTDOWN = 100
+	START = 101
+	STOP = 102
+	PAUSE = 103
+	RESUME = 104
+
+
 class Radio_FSK:
 
 	DATA_TYPES = {'int8':'b', 'int16':'h', 'int32':'i', 'int64':'q',

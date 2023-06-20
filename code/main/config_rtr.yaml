@@ -43,14 +43,15 @@ call_sign:    KJ5AXH    # Ham radio call sign (null = unlicensed)
 
 # Packet Contents
 packet_def:
-  - pressure: float32
-  - temperature: float32
-  - altitude: float32
-  - latitude: float64
-  - longitude: float64
+  - command:      uint8
+  - pressure:     float32
+  - temperature:  float32
+  - altitude:     float32
+  - latitude:     float64
+  - longitude:    float64
   - altitude_gps: float32
-  - fix_quality: uint8
-  - satellites: uint8
+  - fix_quality:  uint8
+  - satellites:   uint8
 
 # Supported data types:
 # int8, int16, int32, int64, uint8, uint16, uint32, uint64,
