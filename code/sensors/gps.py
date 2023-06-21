@@ -29,15 +29,6 @@ class FIX_TYPE(Enum):
     FIX_3D = 3
 
 
-def uncompress_time(time):
-    month = time & 0xF
-    day = (time >> 4) & 0x1F
-    hour = (time >> 9) & 0x1F
-    min = (time >> 14) & 0x3F
-    sec = (time >> 22) & 0x3F
-    return month, day, hour, min, sec
-
-
 class GPS:
     
     def __init__(self, mode: GPS_Mode = GPS_Mode.DISABLED):
@@ -95,3 +86,10 @@ class GPS:
             return None
         return time
     
+    def uncompress_time(time):
+        month = time & 0xF
+        day = (time >> 4) & 0x1F
+        hour = (time >> 9) & 0x1F
+        min = (time >> 14) & 0x3F
+        sec = (time >> 22) & 0x3F
+        return month, day, hour, min, sec
