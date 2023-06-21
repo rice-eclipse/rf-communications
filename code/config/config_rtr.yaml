@@ -49,7 +49,6 @@ packet_def:
   - altitude:     float32
   - latitude:     float64
   - longitude:    float64
-  - altitude_gps: float32
   - fix_quality:  uint8
   - satellites:   uint8
 

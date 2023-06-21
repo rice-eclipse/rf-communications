@@ -35,8 +35,7 @@ class GPS:
         uart = serial.Serial("/dev/ttyS0", baudrate=9600, timeout=30)
         self.gps = adafruit_gps.GPS(uart, debug=False)
         self.mode = mode
-        self.gps.send_command(b"PMTK220,200")
-        self.last_update_time = float('-inf')
+        self.gps.send_command(b"PMTK220,1000")
 
     @property
     def mode(self):
@@ -47,26 +46,17 @@ class GPS:
         self.gps.send_command(new_mode.value)
         self._current_mode = new_mode
 
-    def update(self, interval: float = 0):
-        current_time = time.monotonic()
-        if current_time - self.last_update_time > interval:
-            try:
-                self.gps.update()
-                self.last_update_time = current_time
-                return True
-            except:
-                print("GPS update exception")
-        return False
-    
-    @property
-    def time_since_update(self):
-        return time.monotonic() - self.last_update_time
+    def update(self):
+        self.gps.update()
 
     @property
     def time(self):
         timestamp = self.gps.timestamp_utc
-        return (timestamp.tm_year, timestamp.tm_mon, timestamp.tm_mday,
-                timestamp.tm_hour, timestamp.tm_min, timestamp.tm_sec)
+        if timestamp is not None:
+            return (timestamp.tm_year, timestamp.tm_mon, timestamp.tm_mday,
+                    timestamp.tm_hour, timestamp.tm_min, timestamp.tm_sec)
+        else:
+            return None
     
     @property
     def compressed_time(self):

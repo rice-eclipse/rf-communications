@@ -1,4 +1,6 @@
-from ms5803py import MS5803
+import sys
+sys.path.append("/home/pi/rf-communications/code/sensors")
+from ms5803 import MS5803
 
 
 class Altimeter:
@@ -12,5 +14,6 @@ class Altimeter:
         return self.altimeter.read()
 
     def altitude(pressure, temperature):
-        return (Altimeter.SEA_LEVEL_PRESSURE / pressure) ** (1 / 5.257) - 1 * (temperature + 
-                                                                               273.15) / 0.0065
+        if pressure is not None and temperature is not None and pressure != 0:
+            return ((Altimeter.SEA_LEVEL_PRESSURE / pressure) ** (1 / 5.257) 
+                    - 1) * (temperature + 273.15) / 0.0065

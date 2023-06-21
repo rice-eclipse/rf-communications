@@ -7,7 +7,9 @@ import board
 import struct
 import time
 import os
+import sys
 
+sys.path.append('/home/pi/rf-communications/code/transceiver')
 from transceiver_fsk import RFM9X_FSK as TRX
 
 
