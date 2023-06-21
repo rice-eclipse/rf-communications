@@ -47,8 +47,8 @@ packet_def:
   - pressure:     float32
   - temperature:  float32
   - altitude:     float32
-  - latitude:     float64
-  - longitude:    float64
+  - latitude:     float32
+  - longitude:    float32
   - fix_quality:  uint8
   - satellites:   uint8
 
