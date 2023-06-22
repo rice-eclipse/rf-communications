@@ -9,7 +9,7 @@ tx_power:     20        # Transmit power in dBm
 # Other Radio Parameters
 amp_mode:     D         # D=disabled, B=bypass, T=transmit, R=receive
 timeout:      1.0       # Receive timeout in seconds
-packet_delay: 0.05      # Transmit interval in seconds
+packet_delay: 0.005      # Transmit interval in seconds
 
 # Addresses
 self_address: 222       # Current device's node address (0-255)
@@ -47,9 +47,8 @@ packet_def:
   - pressure:     float32
   - temperature:  float32
   - altitude:     float32
-  - latitude:     float64
-  - longitude:    float64
-  - altitude_gps: float32
+  - latitude:     float32
+  - longitude:    float32
   - fix_quality:  uint8
   - satellites:   uint8
 

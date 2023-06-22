@@ -6,8 +6,10 @@ from digitalio import DigitalInOut as DIO
 import board
 import struct
 import time
+import sys
 
-from transceiver_lora import RFM9x_LoRa as TRX
+sys.path.append('/home/pi/rf-communications/code/transceiver')
+from transceiver_lora import RFM9X_LoRa as TRX
 
 
 class AmpMode(Enum):
@@ -168,6 +170,8 @@ class Radio_LoRa:
 			var_name = list(vardef.keys())[0]
 			var_type = list(vardef.values())[0]
 			val = data[var_name]
+			if val is None:
+				val = 0
 			packed_val = struct.pack(f">{Radio_LoRa.DATA_TYPES[var_type]}", val)
 			data_bytes.extend(packed_val)
 
@@ -180,7 +184,7 @@ class Radio_LoRa:
 
 		self.trx.send(bytes(data_bytes))
 		self.packets_sent += 1
-		print("Packet transmitted successfully")
+		# print("Packet transmitted successfully")
 	
 
 	'''

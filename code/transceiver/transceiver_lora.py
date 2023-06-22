@@ -120,7 +120,7 @@ def ticks_diff(ticks1: int, ticks2: int) -> int:
     return diff
 
 
-class RFM9x:
+class RFM9X_LoRa:
     """Interface to a RFM95/6/7/8 LoRa radio module.  Allows sending and
     receiving bytes of data in long range LoRa mode at a support board frequency
     (433/915mhz).

@@ -7,7 +7,9 @@ import board
 import struct
 import time
 import os
+import sys
 
+sys.path.append('/home/pi/rf-communications/code/transceiver')
 from transceiver_fsk import RFM9X_FSK as TRX
 
 
@@ -178,7 +180,10 @@ class Radio_FSK:
 		for var_def in self.packet_def:
 			var_name = list(var_def.keys())[0]
 			var_type = list(var_def.values())[0]
-			packed_val = struct.pack(f">{Radio_FSK.DATA_TYPES[var_type]}", data[var_name])
+			val = data[var_name]
+			if val is None:
+				val = 0
+			packed_val = struct.pack(f">{Radio_FSK.DATA_TYPES[var_type]}", val)
 			data_bytes.extend(packed_val)
 
 		if self.call_sign != None:
