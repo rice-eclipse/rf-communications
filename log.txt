@@ -1,0 +1,17 @@
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/serial/serialposix.py", line 265, in open
+    self.fd = os.open(self.portstr, os.O_RDWR | os.O_NOCTTY | os.O_NONBLOCK)
+PermissionError: [Errno 13] Permission denied: '/dev/ttyS0'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/pi/rf-communications/code/main_rtr_sensor.py", line 16, in <module>
+    gps = sensors.gps.GPS(sensors.gps.GPS_Mode.NORMAL)
+  File "/home/pi/rf-communications/code/sensors/gps.py", line 34, in __init__
+    uart = serial.Serial("/dev/ttyS0", baudrate=9600, timeout=30)
+  File "/usr/lib/python3/dist-packages/serial/serialutil.py", line 240, in __init__
+    self.open()
+  File "/usr/lib/python3/dist-packages/serial/serialposix.py", line 268, in open
+    raise SerialException(msg.errno, "could not open port {}: {}".format(self._port, msg))
+serial.serialutil.SerialException: [Errno 13] could not open port /dev/ttyS0: [Errno 13] Permission denied: '/dev/ttyS0'

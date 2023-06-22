@@ -1,7 +1,6 @@
 import adafruit_gps
 import serial
 from enum import Enum
-import time
 
 
 class GPS_Mode(Enum):
