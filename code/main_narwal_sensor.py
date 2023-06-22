@@ -4,8 +4,9 @@ import transceiver.radio_lora
 
 
 CONFIG_FILE = 'config/config_narwal_lora.yaml'
+LOG_FILE = 'logs_spaceport/log_narwal.yaml'
 
-trx = transceiver.radio_lora.Radio_LoRa(CONFIG_FILE, None)
+trx = transceiver.radio_lora.Radio_LoRa(CONFIG_FILE, LOG_FILE)
 
 def reformat(num):
     if num is None:
